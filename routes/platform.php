@@ -87,20 +87,12 @@ Route::screen('roles', RoleListScreen::class)
             ->push(__('Roles'), route('platform.systems.roles'));
     });
 
-// Example...
-Route::screen('example', ExampleScreen::class)
-    ->name('platform.example')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push(__('Example screen'));
-    });
+Route::screen('setting/horoscope/{horoscopeSetting?}', \App\Orchid\Screens\Setting\HoroscopeSettingEditScreen::class)
+    ->name('platform.setting.horoscope.edit');
+Route::screen('setting/horoscopes', \App\Orchid\Screens\Setting\HoroscopeSettingListScreen::class)
+    ->name('platform.setting.horoscope.list');
 
-Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');
-Route::screen('example-layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
-Route::screen('example-charts', ExampleChartsScreen::class)->name('platform.example.charts');
-Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
-Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
-Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
-
-//Route::screen('idea', 'Idea::class','platform.screens.idea');
+Route::screen('horoscope/{horoscope?}', \App\Orchid\Screens\Service\HoroscopeEditScreen::class)
+    ->name('platform.service.horoscope.edit');
+Route::screen('horoscopes', \App\Orchid\Screens\Service\HoroscopeListScreen::class)
+    ->name('platform.service.horoscope.list');

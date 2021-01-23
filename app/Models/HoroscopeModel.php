@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Orchid\Screen\AsSource;
 
 /**
  * @property-read int $horoscope_id
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class HoroscopeModel extends Model
 {
+    use AsSource;
     use HasFactory;
 
     protected $table = 'horoscope';

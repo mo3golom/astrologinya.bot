@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Orchid\Screen\AsSource;
 
 /**
  * @property-read int $horoscope_setting_id
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HoroscopeSettingModel extends Model
 {
+    use AsSource;
     use HasFactory;
 
     protected $table = 'horoscope_setting';
@@ -34,7 +36,7 @@ class HoroscopeSettingModel extends Model
         'send_time',
     ];
 
-    public function getZodiacEnum(): array
+    public static function getZodiacEnum(): array
     {
         return config('enums.zodiac', []);
     }
