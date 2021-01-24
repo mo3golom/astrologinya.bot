@@ -96,3 +96,5 @@ Route::screen('horoscope/{horoscope?}', \App\Orchid\Screens\Service\HoroscopeEdi
     ->name('platform.service.horoscope.edit');
 Route::screen('horoscopes', \App\Orchid\Screens\Service\HoroscopeListScreen::class)
     ->name('platform.service.horoscope.list');
+Route::screen('horoscopes-tiktok', \App\Orchid\Screens\Service\HoroscopeTikTokListScreen::class)
+    ->name('platform.service.horoscope.tiktok.list');
