@@ -29,14 +29,23 @@ class HoroscopeListLayout extends Table
     {
         return [
             TD::make('horoscope_id', 'Знак зодиака')
-                ->render(function (HoroscopeModel $model) {
-                    return Link::make($model->horoscopeSetting->zodiac)
+                ->render(static function (HoroscopeModel $model) {
+                    return Link::make($model->setting->zodiac ?? '')
                         ->route('platform.service.horoscope.edit', $model)
                         ;
                 })
             ,
-            TD::make('description', 'Описание'),
-            TD::make('short_description', 'Короткое описание'),
+            TD::make('description', 'Описание')
+                ->render(static function (HoroscopeModel $model) {
+                    return mb_strimwidth($model->description, 0, 100, "...");
+                })
+            ,
+            TD::make('is_send', 'Статус')
+                ->render(static function (HoroscopeModel $model) {
+                    return $model->is_send ?
+                        sprintf('Отправлено в %s', $model->send_at->format('H:i'))
+                        : sprintf('Ожидает отправки в %s', $model->setting->send_time->format('H:i'));
+                }),
             TD::make('created_at', 'Создано'),
         ];
     }

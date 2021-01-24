@@ -36,6 +36,10 @@ class HoroscopeSettingModel extends Model
         'send_time',
     ];
 
+    protected $casts = [
+        'send_time' => 'datetime:H:i',
+    ];
+
     public static function getZodiacEnum(): array
     {
         return config('enums.zodiac', []);

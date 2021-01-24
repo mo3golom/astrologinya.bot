@@ -70,4 +70,14 @@ class ModelRepository
                 ->create($data)
             ;
     }
+
+    /**
+     * @param $model
+     * @param array $data
+     * @return mixed
+     */
+    public function update($model, array $data)
+    {
+        return $model->fill($data)->save();
+    }
 }

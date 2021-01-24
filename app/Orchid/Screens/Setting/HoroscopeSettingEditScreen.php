@@ -47,10 +47,11 @@ class HoroscopeSettingEditScreen extends Screen
 
         if ($this->exists) {
             $this->name = 'Редактирование настройки гороскопа';
-        }
+       }
 
         return [
             'model' => $model,
+            'send_time' => $model->send_time->format('H:i'),
         ];
     }
 
@@ -104,11 +105,13 @@ class HoroscopeSettingEditScreen extends Screen
                     ->title('Ссылка для парсинга короткого описания')
                 ,
                 SimpleMDE::make('model.template')
-                    ->title('Шаблон сообщения'),
-                DateTimer::make('model.send_time')
+                    ->title('Шаблон сообщения')
+                ,
+                DateTimer::make('send_time')
                     ->title('Время отправки сообщения')
                     ->noCalendar()
                     ->format24hr()
+                    ->allowInput()
                     ->format('H:i')
                     ->required()
                 ,
@@ -124,7 +127,9 @@ class HoroscopeSettingEditScreen extends Screen
      */
     public function createOrUpdate(HoroscopeSettingModel $model, Request $request)
     {
-        $model->fill($request->get('model'))->save();
+        $data = $request->get('model');
+        $data['send_time'] = $request->get('send_time');
+        $model->fill($data)->save();
 
         Alert::success('Запись создана успешно');
 

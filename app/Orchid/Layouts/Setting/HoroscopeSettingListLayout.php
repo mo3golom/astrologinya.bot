@@ -34,7 +34,7 @@ class HoroscopeSettingListLayout extends Table
                         ;
                 })
             ,
-            TD::make('description', 'Время отправки сообщения'),
+            TD::make('send_time', 'Время отправки сообщения'),
             TD::make('created_at', 'Создано'),
         ];
     }
