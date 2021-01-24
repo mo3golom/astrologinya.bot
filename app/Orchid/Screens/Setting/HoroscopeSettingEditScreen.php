@@ -106,6 +106,7 @@ class HoroscopeSettingEditScreen extends Screen
                 ,
                 SimpleMDE::make('model.template')
                     ->title('Шаблон сообщения')
+                    ->help( 'Можно использовать следующие макросы: <br/> {{date}} - текущая дата  <br/> {{description}} - описание гороскопа <br/> {{zodiac}} - знак зодиака')
                 ,
                 DateTimer::make('send_time')
                     ->title('Время отправки сообщения')

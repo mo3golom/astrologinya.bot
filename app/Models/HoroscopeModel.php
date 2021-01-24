@@ -36,7 +36,7 @@ class HoroscopeModel extends Model
         'short_description',
         'description',
         'is_send',
-        'send_at'
+        'send_at',
     ];
 
     public function setting(): HasOne
@@ -47,8 +47,16 @@ class HoroscopeModel extends Model
     public function getRenderTemplateAttribute()
     {
         return str_replace(
-            ['{{date}}', '{{description}}'],
-            [Carbon::now()->format('d.m.Y'), $this->description],
+            [
+                '{{date}}',
+                '{{description}}',
+                '{{zodiac}}',
+            ],
+            [
+                Carbon::now()->format('d.m.Y'),
+                $this->description ?? '',
+                $this->setting->zodiac ?? '',
+            ],
             $this->setting->template
         );
     }
