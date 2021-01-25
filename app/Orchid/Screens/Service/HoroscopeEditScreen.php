@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\TextArea;
+use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
@@ -98,6 +99,11 @@ class HoroscopeEditScreen extends Screen
                 ,
                 TextArea::make('model.short_description')
                     ->title('Короткое описание гороскопа (используется только для canva)')
+                ,
+                Upload::make('model.video_id')
+                    ->title('Видео для ТикТока (Инстаграма)')
+                    ->acceptedFiles('video/mp4,video/x-m4v,video/*')
+                    ->maxFiles(1)
                 ,
             ]),
         ];

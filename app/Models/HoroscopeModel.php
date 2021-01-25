@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Orchid\Attachment\Models\Attachment;
 use Orchid\Screen\AsSource;
 
 /**
@@ -16,6 +17,8 @@ use Orchid\Screen\AsSource;
  * @property string $description
  * @property boolean $is_send
  * @property Carbon $send_at
+ * @property int $video_id
+ * @property-read Attachment $attachment
  * @property-read string $render_template
  *
  * Class HoroscopeModel
@@ -37,6 +40,7 @@ class HoroscopeModel extends Model
         'description',
         'is_send',
         'send_at',
+        'video_id',
     ];
 
     public function setting(): HasOne
@@ -44,7 +48,12 @@ class HoroscopeModel extends Model
         return $this->hasOne(HoroscopeSettingModel::class, 'horoscope_setting_id', 'horoscope_setting_id');
     }
 
-    public function getRenderTemplateAttribute()
+    public function attachment(): HasOne
+    {
+        return $this->hasOne(Attachment::class, 'id', 'video_id')->withDefault();
+    }
+
+    public function getRenderTemplateAttribute(): string
     {
         return str_replace(
             [

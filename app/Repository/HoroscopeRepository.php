@@ -32,12 +32,18 @@ class HoroscopeRepository extends ModelRepository
      */
     public function deleteByHoroscopeSettingId(int $horoscopeSettingId)
     {
-        return
-            $this->model
-                ->newQuery()
-                ->where('horoscope_setting_id', '=', $horoscopeSettingId)
-                ->delete()
-            ;
+        $query = $this->model
+            ->newQuery()
+            ->where('horoscope_setting_id', '=', $horoscopeSettingId)
+        ;
+
+        // Удаляем вложения
+        $horoscopes = $query->with('attachment')->get();
+        $horoscopes->map(static function (HoroscopeModel $horoscopeModel) {
+            $horoscopeModel->attachment->delete();
+        });
+
+        return $query->delete();
     }
 
     /**
@@ -52,6 +58,19 @@ class HoroscopeRepository extends ModelRepository
                 ->where('is_send', '=', false)
                 ->orWhereNull('is_send')
                 ->get()
+            ;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getFirstWithoutVideo()
+    {
+        return
+            $this->model
+                ->newQuery()
+                ->whereNull('video_id')
+                ->first()
             ;
     }
 }

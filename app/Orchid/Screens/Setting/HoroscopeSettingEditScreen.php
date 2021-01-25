@@ -10,6 +10,7 @@ use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Fields\SimpleMDE;
+use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
@@ -47,7 +48,7 @@ class HoroscopeSettingEditScreen extends Screen
 
         if ($this->exists) {
             $this->name = 'Редактирование настройки гороскопа';
-       }
+        }
 
         return [
             'model' => $model,
@@ -89,6 +90,7 @@ class HoroscopeSettingEditScreen extends Screen
     {
         $zodiac = HoroscopeSettingModel::getZodiacEnum();
         $zodiacSelect = array_combine($zodiac, $zodiac);
+
         return [
             Layout::rows([
                 Select::make('model.zodiac')
@@ -106,7 +108,12 @@ class HoroscopeSettingEditScreen extends Screen
                 ,
                 SimpleMDE::make('model.template')
                     ->title('Шаблон сообщения')
-                    ->help( 'Можно использовать следующие макросы: <br/> {{date}} - текущая дата  <br/> {{description}} - описание гороскопа <br/> {{zodiac}} - знак зодиака')
+                    ->help('Можно использовать следующие макросы: <br/> {{date}} - текущая дата  <br/> {{description}} - описание гороскопа <br/> {{zodiac}} - знак зодиака')
+                ,
+                Upload::make('model.template_video_id')
+                    ->title('Шаблон видео для ТикТока (Инстаграма)')
+                    ->acceptedFiles('video/mp4,video/x-m4v,video/*')
+                    ->maxFiles(1)
                 ,
                 DateTimer::make('send_time')
                     ->title('Время отправки сообщения')
@@ -129,6 +136,11 @@ class HoroscopeSettingEditScreen extends Screen
     public function createOrUpdate(HoroscopeSettingModel $model, Request $request)
     {
         $data = $request->get('model');
+
+        if (null !== $data['template_video_id']) {
+            $data['template_video_id'] = $data['template_video_id'][0] ?? null;
+        }
+
         $data['send_time'] = $request->get('send_time');
         $model->fill($data)->save();
 

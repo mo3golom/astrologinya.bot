@@ -9,14 +9,14 @@ use App\Service\OrakulParserService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class ParseZodiacDescriptions extends Command
+class ZodiacParseDescriptions extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'parse:zodiac:descriptions';
+    protected $signature = 'zodiac:parse:descriptions';
 
     /**
      * The console command description.

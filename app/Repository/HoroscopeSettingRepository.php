@@ -43,4 +43,16 @@ class HoroscopeSettingRepository extends ModelRepository
                 ->first()
             ;
     }
+
+    public function getWithoutActualHoroscopeVideo()
+    {
+        return
+            $this->model
+                ->newQuery()
+                ->select(['horoscope_setting.*'])
+                ->leftJoin('horoscope as h', 'h.horoscope_setting_id', '=', 'horoscope_setting.horoscope_setting_id')
+                ->whereNotNull('h.horoscope_id')
+                ->first()
+            ;
+    }
 }
