@@ -17,6 +17,29 @@ class ZodiacVideoService
 {
     private const SAVE_PATH = 'public/storage/horoscope_video';
 
+    private const BITRATE = 8580;
+
+    /**
+     * @var int
+     */
+    private $positionX;
+
+    /**
+     * @var int
+     */
+    private $positionY;
+
+    private $zodiacTextImageService;
+
+    public function __construct(ZodiacTextImageService $zodiacTextImageService)
+    {
+        $config = config('zodiac.image_text');
+        $this->positionX = $config['position_x'];
+        $this->positionY = $config['position_y'];
+
+        $this->zodiacTextImageService = $zodiacTextImageService;
+    }
+
     /**
      * @param string $templateVideoPath
      * @param string $text
@@ -25,15 +48,15 @@ class ZodiacVideoService
      */
     public function generate(string $templateVideoPath, string $text, string $fileName): Attachment
     {
-        $image = $this->generateTextImage($text);
+        $image = $this->zodiacTextImageService->generate($text, self::SAVE_PATH);
         $ffmpeg = FFMpeg::create();
         $video = $ffmpeg->open($templateVideoPath);
         $video
             ->filters()
             ->watermark($image, [
                 'position' => 'absolute',
-                'x' => 65,
-                'y' => 1037,
+                'x' => $this->positionX,
+                'y' => $this->positionY,
             ])
         ;
 
@@ -41,7 +64,7 @@ class ZodiacVideoService
         // Fix for error "Encoding failed : Can't save to X264"
         // See: https://github.com/PHP-FFMpeg/PHP-FFMpeg/issues/310
         $mp4Format->setAudioCodec("libmp3lame");
-        $mp4Format->setKiloBitrate(8580);
+        $mp4Format->setKiloBitrate(self::BITRATE);
 
         // Создаем папку в паблике, если ее еще нет
         $this->createDirIfNotExists(self::SAVE_PATH);
@@ -54,42 +77,6 @@ class ZodiacVideoService
         unlink($image);
 
         return $attachment;
-    }
-
-    /**
-     * @param string $text
-     * @return string
-     */
-    private function generateTextImage(string $text): string
-    {
-        $offset = 10;
-        $width = 950;
-        $height = 640;
-        $max_len = 60;
-        $font_size = 60;
-        $font_height = 30;
-        $lines = explode("\n", wordwrap($text, $max_len));
-        $y = $offset;
-        $canvas = Image::canvas($width, $height);
-
-        foreach ($lines as $line) {
-            $canvas->text($line, $width / 2, $y, static function (Font $font) use ($font_size) {
-                $font
-                    ->file(sprintf('%s/public/fonts/kurale.ttf', base_path()))
-                    ->size($font_size)
-                    ->color('#ffffff')
-                    ->align('center')
-                    ->valign('top')
-                ;
-            });
-
-            $y += $font_height * 2;
-        }
-
-        $path = sprintf('%s/horoscope_image_%s.png', self::SAVE_PATH, date('dmyH'));
-        $canvas->save($path);
-
-        return $path;
     }
 
     /**
