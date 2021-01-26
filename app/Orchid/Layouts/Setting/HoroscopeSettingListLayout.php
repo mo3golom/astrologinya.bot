@@ -34,6 +34,17 @@ class HoroscopeSettingListLayout extends Table
                         ;
                 })
             ,
+            TD::make('template_video_id', 'Шаблон видео')
+                ->align(TD::ALIGN_CENTER)
+                ->render(function (HoroscopeSettingModel $model) {
+                    return
+                        null !== $model->attachment ?
+                            Link::make('Скачать')
+                                ->href($model->attachment->url())
+                                ->target('_blank')
+                            : '';
+                })
+            ,
             TD::make('send_time', 'Время отправки сообщения'),
             TD::make('created_at', 'Создано'),
         ];

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Models\HoroscopeModel;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class HoroscopeRepository
@@ -47,9 +49,9 @@ class HoroscopeRepository extends ModelRepository
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function getAllNoSend()
+    public function getAllNoSend(): Collection
     {
         return
             $this->model
@@ -62,15 +64,28 @@ class HoroscopeRepository extends ModelRepository
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return Model|null
      */
-    public function getFirstWithoutVideo()
+    public function getFirstWithoutVideo(): ?Model
     {
         return
             $this->model
                 ->newQuery()
                 ->whereNull('video_id')
                 ->first()
+            ;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAllWithVideo(): Collection
+    {
+        return
+            $this->model
+                ->newQuery()
+                ->whereNotNull('video_id')
+                ->get()
             ;
     }
 }

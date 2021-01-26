@@ -45,7 +45,7 @@ class ZodiacParseDescriptions extends Command
     public function handle(HoroscopeSettingRepository $horoscopeSettingRepository, OrakulParserService $orakulParserService, HoroscopeRepository $horoscopeRepository): void
     {
         /** @var HoroscopeSettingModel|null $horoscopeSetting */
-        $horoscopeSetting = $horoscopeSettingRepository->getWithoutActualHoroscope();
+        $horoscopeSetting = $horoscopeSettingRepository->getFirstWithoutActualHoroscope();
 
         if (null === $horoscopeSetting) {
             $this->info('нет гороскопов, которые нужно обновить');

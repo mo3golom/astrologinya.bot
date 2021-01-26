@@ -31,7 +31,7 @@ class HoroscopeSettingRepository extends ModelRepository
     /**
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
-    public function getWithoutActualHoroscope()
+    public function getFirstWithoutActualHoroscope()
     {
         return
             $this->model
@@ -44,7 +44,7 @@ class HoroscopeSettingRepository extends ModelRepository
             ;
     }
 
-    public function getWithoutActualHoroscopeVideo()
+    public function getFirstWithoutActualHoroscopeVideo()
     {
         return
             $this->model

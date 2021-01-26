@@ -112,8 +112,8 @@ return [
     */
 
     'template' => [
-        'header' => null,
-        'footer' => null,
+        'header' => 'orchid.header',
+        'footer' => 'orchid.footer',
     ],
 
     /*

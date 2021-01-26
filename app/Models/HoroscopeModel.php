@@ -43,6 +43,11 @@ class HoroscopeModel extends Model
         'video_id',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime:d.m.Y H:i',
+        'updated_at' => 'datetime:d.m.Y H:i',
+    ];
+
     public function setting(): HasOne
     {
         return $this->hasOne(HoroscopeSettingModel::class, 'horoscope_setting_id', 'horoscope_setting_id');

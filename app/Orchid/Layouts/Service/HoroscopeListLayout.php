@@ -37,14 +37,25 @@ class HoroscopeListLayout extends Table
             ,
             TD::make('description', 'Описание')
                 ->render(static function (HoroscopeModel $model) {
-                    return mb_strimwidth($model->description, 0, 100, "...");
+                    return mb_strimwidth($model->description, 0, 50, "...");
+                })
+            ,
+            TD::make('video_id', 'Видео')
+                ->align(TD::ALIGN_CENTER)
+                ->render(function (HoroscopeModel $model) {
+                    return
+                        null !== $model->attachment ?
+                            Link::make('Скачать')
+                                ->href($model->attachment->url())
+                                ->target('_blank')
+                            : '';
                 })
             ,
             TD::make('is_send', 'Статус')
                 ->render(static function (HoroscopeModel $model) {
                     return $model->is_send ?
-                        sprintf('Отправлено в %s', $model->send_at->format('H:i'))
-                        : sprintf('Ожидает отправки в %s', $model->setting->send_time->format('H:i'));
+                        sprintf('<span class="badge bg-success text-white">Отправлено в %s</span>', $model->send_at->format('H:i'))
+                        : sprintf('<span class="badge bg-info text-white">Ожидает отправки в %s</span>', $model->setting->send_time->format('H:i'));
                 }),
             TD::make('created_at', 'Создано'),
         ];

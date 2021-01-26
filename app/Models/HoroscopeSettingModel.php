@@ -45,6 +45,8 @@ class HoroscopeSettingModel extends Model
 
     protected $casts = [
         'send_time' => 'datetime:H:i',
+        'created_at' => 'datetime:d.m.Y H:i',
+        'updated_at' => 'datetime:d.m.Y H:i',
     ];
 
     public static function getZodiacEnum(): array

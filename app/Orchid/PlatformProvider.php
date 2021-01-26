@@ -29,9 +29,6 @@ class PlatformProvider extends OrchidServiceProvider
             ItemMenu::label('Гороскопы')
                 ->route('platform.service.horoscope.list')
             ,
-            ItemMenu::label('Гороскопы для TikTok')
-                ->route('platform.service.horoscope.tiktok.list')
-            ,
             ItemMenu::label('Настройки Гороскопа')
                 ->title('Настройки')
                 ->route('platform.setting.horoscope.list')

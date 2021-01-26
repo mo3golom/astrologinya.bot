@@ -6,6 +6,7 @@ use App\Models\HoroscopeModel;
 use App\Orchid\Layouts\Service\HoroscopeListLayout;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class HoroscopeListScreen extends Screen
 {
@@ -57,6 +58,11 @@ class HoroscopeListScreen extends Screen
     public function layout(): array
     {
         return [
+            Layout::rows([
+                Link::make('Api для получения ссылок на видео')
+                    ->route('horoscope.api.urls')
+                ,
+            ]),
             HoroscopeListLayout::class,
         ];
     }
