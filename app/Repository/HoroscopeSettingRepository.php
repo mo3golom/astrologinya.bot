@@ -40,23 +40,8 @@ class HoroscopeSettingRepository extends ModelRepository
                 ->select(['horoscope_setting.*'])
                 ->leftJoin('horoscope as h', 'h.horoscope_setting_id', '=', 'horoscope_setting.horoscope_setting_id')
                 ->whereNull('h.horoscope_id')
-                ->orWhere(DB::raw('DAY(h.created_at)'), '<', Carbon::now()->day)
+                ->orWhere(DB::raw("date_part('day', h.created_at)"), '<', Carbon::now()->day)
                 ->get()
-            ;
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Model|object|null
-     */
-    public function getFirstWithoutActualHoroscopeVideo()
-    {
-        return
-            $this->model
-                ->newQuery()
-                ->select(['horoscope_setting.*'])
-                ->leftJoin('horoscope as h', 'h.horoscope_setting_id', '=', 'horoscope_setting.horoscope_setting_id')
-                ->whereNotNull('h.horoscope_id')
-                ->first()
             ;
     }
 }

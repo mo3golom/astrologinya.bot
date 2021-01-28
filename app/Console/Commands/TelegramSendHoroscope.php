@@ -3,14 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\HoroscopeModel;
-use App\Models\HoroscopeSettingModel;
 use App\Repository\HoroscopeRepository;
-use App\Repository\HoroscopeSettingRepository;
 use App\Service\Botman\TelegramChannel;
-use App\Service\OrakulParserService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class TelegramSendHoroscope extends Command
 {
@@ -49,7 +45,7 @@ class TelegramSendHoroscope extends Command
         $horoscopes = $horoscopeRepository->getAllNoSend();
 
         $horoscopes->map(static function (HoroscopeModel $horoscope) use ($horoscopeRepository, $telegramBot) {
-            $now = Carbon::now();
+            $now = Carbon::now()->setTimezone('Europe/Moscow');
             $sendTime = $horoscope->setting->send_time->copy()->setDateFrom($now);
 
             if (

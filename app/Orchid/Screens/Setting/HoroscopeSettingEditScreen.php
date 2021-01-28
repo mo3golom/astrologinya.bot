@@ -112,7 +112,6 @@ class HoroscopeSettingEditScreen extends Screen
                 ,
                 Upload::make('model.template_video_id')
                     ->title('Шаблон видео для ТикТока (Инстаграма)')
-                    ->acceptedFiles('video/mp4,video/x-m4v,video/*')
                     ->maxFiles(1)
                 ,
                 DateTimer::make('send_time')
