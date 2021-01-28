@@ -12,7 +12,7 @@ use Orchid\Attachment\Models\Attachment;
 
 class ZodiacVideoService
 {
-    private const SAVE_PATH = 'public/storage/horoscope_video';
+    private const SAVE_PATH = 'storage/app/public/horoscope_video';
 
     private const BITRATE = 8580;
 
