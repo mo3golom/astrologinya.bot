@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Models\HoroscopeSettingModel;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -29,9 +30,9 @@ class HoroscopeSettingRepository extends ModelRepository
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return Collection
      */
-    public function getFirstWithoutActualHoroscope()
+    public function getAllWithoutActualHoroscope(): Collection
     {
         return
             $this->model
@@ -40,10 +41,13 @@ class HoroscopeSettingRepository extends ModelRepository
                 ->leftJoin('horoscope as h', 'h.horoscope_setting_id', '=', 'horoscope_setting.horoscope_setting_id')
                 ->whereNull('h.horoscope_id')
                 ->orWhere(DB::raw('DAY(h.created_at)'), '<', Carbon::now()->day)
-                ->first()
+                ->get()
             ;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Model|object|null
+     */
     public function getFirstWithoutActualHoroscopeVideo()
     {
         return

@@ -44,28 +44,32 @@ class ZodiacParseDescriptions extends Command
      */
     public function handle(HoroscopeSettingRepository $horoscopeSettingRepository, OrakulParserService $orakulParserService, HoroscopeRepository $horoscopeRepository): void
     {
-        /** @var HoroscopeSettingModel|null $horoscopeSetting */
-        $horoscopeSetting = $horoscopeSettingRepository->getFirstWithoutActualHoroscope();
+        $horoscopeSettingCollection = $horoscopeSettingRepository->getAllWithoutActualHoroscope();
 
-        if (null === $horoscopeSetting) {
+        if (0 >= $horoscopeSettingCollection->count()) {
             $this->info('нет гороскопов, которые нужно обновить');
             Log::info('нет гороскопов, которые нужно обновить');
 
             return;
         }
 
-        $description = $orakulParserService->parse($horoscopeSetting->parse_url);
-        $shortDescription = null;
+        foreach ($horoscopeSettingCollection as $horoscopeSetting) {
+            $description = $orakulParserService->parse($horoscopeSetting->parse_url);
+            $shortDescription = null;
 
-        if (null !== $horoscopeSetting->short_description_parse_url) {
-            $shortDescription = $orakulParserService->parse($horoscopeSetting->short_description_parse_url);
+            if (null !== $horoscopeSetting->short_description_parse_url) {
+                $shortDescription = $orakulParserService->parse($horoscopeSetting->short_description_parse_url);
+            }
+
+            $horoscopeRepository->deleteByHoroscopeSettingId($horoscopeSetting->horoscope_setting_id);
+            $horoscopeRepository->create([
+                'horoscope_setting_id' => $horoscopeSetting->horoscope_setting_id,
+                'description' => $description,
+                'short_description' => $shortDescription,
+            ]);
+
+            // Делаем задержку, чтобы сильно не спамить при парсинге
+            time_nanosleep(10,0);
         }
-
-        $horoscopeRepository->deleteByHoroscopeSettingId($horoscopeSetting->horoscope_setting_id);
-        $horoscopeRepository->create([
-            'horoscope_setting_id' => $horoscopeSetting->horoscope_setting_id,
-            'description' => $description,
-            'short_description' => $shortDescription,
-        ]);
     }
 }

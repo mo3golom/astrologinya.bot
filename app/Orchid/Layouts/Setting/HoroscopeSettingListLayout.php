@@ -38,8 +38,8 @@ class HoroscopeSettingListLayout extends Table
                 ->align(TD::ALIGN_CENTER)
                 ->render(function (HoroscopeSettingModel $model) {
                     return
-                        null !== $model->attachment ?
-                            Link::make('Скачать')
+                        null !== $model->attachment->id ?
+                            Link::make($model->attachment->original_name)
                                 ->href($model->attachment->url())
                                 ->target('_blank')
                             : '';
