@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Models\HoroscopeModel;
 use FFMpeg\FFMpeg;
 use FFMpeg\Format\Video\X264;
 use Illuminate\Http\UploadedFile;
-use Intervention\Image\Facades\Image;
-use Intervention\Image\Gd\Font;
 use Orchid\Attachment\File;
 use Orchid\Attachment\Models\Attachment;
 
@@ -48,6 +45,9 @@ class ZodiacVideoService
      */
     public function generate(string $templateVideoPath, string $text, string $fileName): Attachment
     {
+        // Создаем папку в паблике, если ее еще нет
+        $this->createDirIfNotExists(self::SAVE_PATH);
+
         $image = $this->zodiacTextImageService->generate($text, self::SAVE_PATH);
         $ffmpeg = FFMpeg::create();
         $video = $ffmpeg->open($templateVideoPath);
@@ -65,9 +65,6 @@ class ZodiacVideoService
         // See: https://github.com/PHP-FFMpeg/PHP-FFMpeg/issues/310
         $mp4Format->setAudioCodec("libmp3lame");
         $mp4Format->setKiloBitrate(self::BITRATE);
-
-        // Создаем папку в паблике, если ее еще нет
-        $this->createDirIfNotExists(self::SAVE_PATH);
 
         // Сохраняем видео
         $path = sprintf('%s/%s.mp4', self::SAVE_PATH, $fileName);
