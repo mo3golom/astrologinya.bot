@@ -137,7 +137,7 @@ class HoroscopeSettingEditScreen extends Screen
     {
         $data = $request->get('model');
 
-        if (null !== $data['template_video_id']) {
+        if (isset($data['template_video_id'])) {
             $data['template_video_id'] = $data['template_video_id'][0] ?? null;
         }
 
