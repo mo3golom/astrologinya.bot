@@ -12,8 +12,14 @@ use Orchid\Attachment\Models\Attachment;
 
 class ZodiacVideoService
 {
+    /**
+     * Путь для сохранения видео
+     */
     private const SAVE_PATH = 'storage/app/public/horoscope_video';
 
+    /**
+     * Битрейт видео
+     */
     private const BITRATE = 8580;
 
     /**
@@ -26,6 +32,9 @@ class ZodiacVideoService
      */
     private $positionY;
 
+    /**
+     * @var ZodiacTextImageService
+     */
     private $zodiacTextImageService;
 
     public function __construct(ZodiacTextImageService $zodiacTextImageService)
