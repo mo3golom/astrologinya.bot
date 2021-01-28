@@ -52,7 +52,7 @@ class HoroscopeSettingEditScreen extends Screen
 
         return [
             'model' => $model,
-            'send_time' => $model->send_time->format('H:i'),
+            'send_time' => null !== $model->send_time ? $model->send_time->format('H:i') : null,
         ];
     }
 
