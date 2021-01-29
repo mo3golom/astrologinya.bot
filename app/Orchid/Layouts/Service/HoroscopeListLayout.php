@@ -43,12 +43,14 @@ class HoroscopeListLayout extends Table
             TD::make('video_id', 'Видео')
                 ->align(TD::ALIGN_CENTER)
                 ->render(function (HoroscopeModel $model) {
-                    return
-                        null !== $model->attachment->id ?
-                            Link::make($model->attachment->original_name)
-                                ->href($model->attachment->url())
-                                ->target('_blank')
-                            : '';
+                    return (
+                        null !== $model->attachment->id
+                        && null !== $model->attachment->url()
+                    )
+                        ? Link::make($model->attachment->original_name)
+                            ->href($model->attachment->url())
+                            ->target('_blank')
+                        : '';
                 })
             ,
             TD::make('is_send', 'Статус')

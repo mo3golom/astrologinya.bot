@@ -37,12 +37,14 @@ class HoroscopeSettingListLayout extends Table
             TD::make('template_video_id', 'Шаблон видео')
                 ->align(TD::ALIGN_CENTER)
                 ->render(function (HoroscopeSettingModel $model) {
-                    return
-                        null !== $model->attachment->id ?
-                            Link::make($model->attachment->original_name)
-                                ->href($model->attachment->url())
-                                ->target('_blank')
-                            : '';
+                    return (
+                        null !== $model->attachment->id
+                        && null !== $model->attachment->url()
+                    )
+                        ? Link::make($model->attachment->original_name)
+                            ->href($model->attachment->url())
+                            ->target('_blank')
+                        : '';
                 })
             ,
             TD::make('send_time', 'Время отправки сообщения'),
