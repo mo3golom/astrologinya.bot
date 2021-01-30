@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Intervention\Image\Facades\Image;
 use Intervention\Image\Gd\Font;
+use Illuminate\Support\Facades\Storage;
+use Image;
 
 class ZodiacTextImageService
 {
@@ -50,7 +51,7 @@ class ZodiacTextImageService
         $this->fontHeight = $config['font_height'];
     }
 
-    public function generate(string $text, string $savePath): string
+    public function generate(string $text, string $disk = 'public'): string
     {
         $lines = explode("\n", wordwrap($text, $this->maxLen));
         $y = $this->offset;
@@ -70,8 +71,8 @@ class ZodiacTextImageService
             $y += $this->fontHeight * 2;
         }
 
-        $path = sprintf('%s/horoscope_image_%s.png', $savePath, date('dmyH'));
-        $canvas->save($path);
+        $path = sprintf('horoscope_picture/horoscope_image_%s.png', date('dmyH'));
+        Storage::disk($disk)->put($path, $canvas->encode('png', 100));
 
         return $path;
     }

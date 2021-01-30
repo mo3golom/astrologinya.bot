@@ -7,9 +7,9 @@ use App\Models\HoroscopeSettingModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\TextArea;
-use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
@@ -36,6 +36,11 @@ class HoroscopeEditScreen extends Screen
     private $exists = false;
 
     /**
+     * @var string|null
+     */
+    private $videoUrl = null;
+
+    /**
      * Query data.
      *
      * @param HoroscopeModel $model
@@ -47,6 +52,7 @@ class HoroscopeEditScreen extends Screen
 
         if ($this->exists) {
             $this->name = 'Редактирование гороскопа';
+            $this->videoUrl = $model->video_url ?? null;
         }
 
         return [
@@ -100,9 +106,11 @@ class HoroscopeEditScreen extends Screen
                 TextArea::make('model.short_description')
                     ->title('Короткое описание гороскопа (используется только для canva)')
                 ,
-                Upload::make('model.video_id')
+                Link::make('Скачать')
                     ->title('Видео для ТикТока (Инстаграма)')
-                    ->maxFiles(1)
+                    ->href($this->videoUrl ?? '')
+                    ->canSee(null !== $this->videoUrl && '' !== $this->videoUrl)
+                    ->target('_blank')
                 ,
             ]),
         ];

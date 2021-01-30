@@ -4,19 +4,13 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use FFMpeg\FFMpeg;
+use FFMpeg;
 use FFMpeg\Format\Video\X264;
-use Illuminate\Http\UploadedFile;
-use Orchid\Attachment\File;
-use Orchid\Attachment\Models\Attachment;
+use Illuminate\Support\Facades\Storage;
+use ProtoneMedia\LaravelFFMpeg\Filters\WatermarkFactory;
 
 class ZodiacVideoService
 {
-    /**
-     * Путь для сохранения видео
-     */
-    private const SAVE_PATH = 'storage/app/public/horoscope_video';
-
     /**
      * Битрейт видео
      */
@@ -37,6 +31,11 @@ class ZodiacVideoService
      */
     private $zodiacTextImageService;
 
+    /**
+     * ZodiacVideoService constructor.
+     *
+     * @param ZodiacTextImageService $zodiacTextImageService
+     */
     public function __construct(ZodiacTextImageService $zodiacTextImageService)
     {
         $config = config('zodiac.image_text');
@@ -47,27 +46,18 @@ class ZodiacVideoService
     }
 
     /**
-     * @param string $templateVideoPath
+     * @param string $templateVideoUrl
      * @param string $text
      * @param string $fileName
-     * @return Attachment
+     * @param string $disk
+     * @return string
      */
-    public function generate(string $templateVideoPath, string $text, string $fileName): Attachment
+    public function generate(string $templateVideoUrl, string $text, string $fileName, string $disk = 'public'): string
     {
-        // Создаем папку в паблике, если ее еще нет
-        $this->createDirIfNotExists(self::SAVE_PATH);
+        $storage = Storage::disk($disk);
+        $fileName = sprintf('horoscope_video/%s.mp4', $fileName);
 
-        $image = $this->zodiacTextImageService->generate($text, self::SAVE_PATH);
-        $ffmpeg = FFMpeg::create();
-        $video = $ffmpeg->open($templateVideoPath);
-        $video
-            ->filters()
-            ->watermark($image, [
-                'position' => 'absolute',
-                'x' => $this->positionX,
-                'y' => $this->positionY,
-            ])
-        ;
+        $image = $this->zodiacTextImageService->generate($text, $disk);
 
         $mp4Format = new X264();
         // Fix for error "Encoding failed : Can't save to X264"
@@ -75,42 +65,26 @@ class ZodiacVideoService
         $mp4Format->setAudioCodec("libmp3lame");
         $mp4Format->setKiloBitrate(self::BITRATE);
 
-        // Сохраняем видео
-        $path = sprintf('%s/%s.mp4', self::SAVE_PATH, $fileName);
-        $video->save($mp4Format, $path);
-        $attachment = (new File($this->transformPathToUploadedFile($path)))->load();
-        unlink($path);
-        unlink($image);
 
-        return $attachment;
-    }
+        FFMpeg::openUrl($templateVideoUrl, [])
+            ->addWatermark(function (WatermarkFactory $watermark) use ($image, $disk) {
+                $watermark->fromDisk($disk)
+                    ->open($image)
+                    ->left($this->positionX)
+                    ->top($this->positionY)
+                ;
+            })
+            ->export()
+            ->onProgress(function ($percentage) {
+                echo "{$percentage}% transcoded";
+            })
+            ->toDisk($disk)
+            ->inFormat($mp4Format)
+            ->save($fileName)
+        ;
 
-    /**
-     * @param string $dirPath
-     */
-    private function createDirIfNotExists(string $dirPath): void
-    {
-        if (
-            !file_exists($dirPath)
-            && !mkdir($dirPath, 0777, true)
-            && !is_dir($dirPath)
-        ) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
-        }
-    }
+        $storage->delete($image);
 
-    /**
-     * @param string $path
-     * @return UploadedFile
-     */
-    private function transformPathToUploadedFile(string $path): UploadedFile
-    {
-        $pathInfo = pathinfo($path);
-
-        return new UploadedFile(
-            $path,
-            $pathInfo['basename'],
-            $pathInfo['extension'],
-        );
+        return $storage->url($fileName);
     }
 }

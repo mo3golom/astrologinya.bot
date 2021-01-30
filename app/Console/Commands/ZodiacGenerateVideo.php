@@ -25,10 +25,16 @@ class ZodiacGenerateVideo extends Command
     protected $description = '';
 
     /**
+     * @var string
+     */
+    private $disk;
+
+    /**
      * Create a new command instance.
      */
     public function __construct()
     {
+        $this->disk = config('zodiac.default_disk');
         parent::__construct();
     }
 
@@ -60,15 +66,20 @@ class ZodiacGenerateVideo extends Command
             return;
         }
 
-        $attachment = $zodiacVideoGeneratorService->generate(
-            $horoscope->setting->template_video_path,
-            $horoscope->short_description,
-            $horoscope->setting->zodiac
-        );
+        try {
+            $videoPath = $zodiacVideoGeneratorService->generate(
+                $horoscope->setting->template_video_url,
+                $horoscope->short_description,
+                $horoscope->setting->zodiac,
+                $this->disk
+            );
 
-        $horoscopeRepository->update(
-            $horoscope,
-            ['video_id' => $attachment->id]
-        );
+            $horoscopeRepository->update(
+                $horoscope,
+                ['video_url' => $videoPath]
+            );
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage() . $th->getTraceAsString());
+        }
     }
 }

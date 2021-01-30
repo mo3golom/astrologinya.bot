@@ -3,7 +3,6 @@
 namespace App\Orchid\Layouts\Service;
 
 use App\Models\HoroscopeModel;
-use App\Models\HoroscopeSettingModel;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
@@ -40,15 +39,12 @@ class HoroscopeListLayout extends Table
                     return mb_strimwidth($model->description, 0, 50, "...");
                 })
             ,
-            TD::make('video_id', 'Видео')
+            TD::make('video_url', 'Видео')
                 ->align(TD::ALIGN_CENTER)
                 ->render(function (HoroscopeModel $model) {
-                    return (
-                        null !== $model->attachment->id
-                        && null !== $model->attachment->url()
-                    )
-                        ? Link::make($model->attachment->original_name)
-                            ->href($model->attachment->url())
+                    return (null !== $model->video_url)
+                        ? Link::make(sprintf('Скачать %s.mp4',$model->setting->zodiac))
+                            ->href($model->video_url)
                             ->target('_blank')
                         : '';
                 })

@@ -52,6 +52,15 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
         ],
 
+        'yandexcloud' => [
+            'driver' => 's3',
+            'key' => env('YANDEX_CLOUD_OBJECT_STORAGE_KEY'),
+            'secret' => env('YANDEX_CLOUD_OBJECT_STORAGE_SECRET'),
+            'endpoint' => 'https://storage.yandexcloud.net/',
+            'region' => 'us-west-2',
+            'bucket' => env('YANDEX_CLOUD_OBJECT_STORAGE_BUCKET'),
+            'url' => sprintf('https://storage.yandexcloud.net/%s', env('YANDEX_CLOUD_OBJECT_STORAGE_BUCKET')),
+        ],
     ],
 
     /*

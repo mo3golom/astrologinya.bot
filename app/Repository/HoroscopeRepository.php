@@ -71,7 +71,7 @@ class HoroscopeRepository extends ModelRepository
         return
             $this->model
                 ->newQuery()
-                ->whereNull('video_id')
+                ->whereNull('video_url')
                 ->first()
             ;
     }
@@ -84,7 +84,7 @@ class HoroscopeRepository extends ModelRepository
         return
             $this->model
                 ->newQuery()
-                ->whereNotNull('video_id')
+                ->whereNotNull('video_url')
                 ->get()
             ;
     }

@@ -11,4 +11,5 @@ return [
         'font_size' => env('ZODIAC_TEXT_FONT_SIZE', 60),
         'font_height' => env('ZODIAC_TEXT_FONT_HEIGHT', 30),
     ],
+    'default_disk' => env('ZODIAC_DEFAULT_DISK', 'public'),
 ];

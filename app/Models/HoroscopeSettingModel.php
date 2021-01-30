@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Orchid\Attachment\Attachable;
 use Orchid\Attachment\Models\Attachment;
 use Orchid\Screen\AsSource;
 
@@ -18,7 +17,7 @@ use Orchid\Screen\AsSource;
  * @property string $template
  * @property Carbon $send_time
  * @property int $template_video_id
- * @property-read int $template_video_path
+ * @property-read int $template_video_url
  * @property-read Attachment $attachment
  *
  * Class HoroscopeSettingModel
@@ -54,9 +53,9 @@ class HoroscopeSettingModel extends Model
         return config('enums.zodiac', []);
     }
 
-    public function getTemplateVideoPathAttribute(): string
+    public function getTemplateVideoUrlAttribute(): string
     {
-        return sprintf('public\%s',$this->attachment->first()->relative_url ?? '');
+        return $this->attachment->url() ?? '';
     }
 
     public function attachment(): HasOne

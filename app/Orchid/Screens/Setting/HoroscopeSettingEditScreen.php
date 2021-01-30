@@ -37,6 +37,19 @@ class HoroscopeSettingEditScreen extends Screen
     private $exists = false;
 
     /**
+     * @var string
+     */
+    private $disk;
+
+    /**
+     * HoroscopeSettingEditScreen constructor.
+     */
+    public function __construct()
+    {
+        $this->disk = config('zodiac.default_disk');
+    }
+
+    /**
      * Query data.
      *
      * @param HoroscopeSettingModel $model
@@ -114,6 +127,7 @@ class HoroscopeSettingEditScreen extends Screen
                     ->title('Шаблон видео для ТикТока (Инстаграма)')
                     ->acceptedFiles('video/mp4,video/x-m4v,video/*')
                     ->maxFiles(1)
+                    ->storage($this->disk)
                 ,
                 DateTimer::make('send_time')
                     ->title('Время отправки сообщения')
