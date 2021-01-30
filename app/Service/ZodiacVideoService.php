@@ -75,9 +75,6 @@ class ZodiacVideoService
                 ;
             })
             ->export()
-            ->onProgress(function ($percentage) {
-                echo "{$percentage}% transcoded";
-            })
             ->toDisk($disk)
             ->inFormat($mp4Format)
             ->save($fileName)
