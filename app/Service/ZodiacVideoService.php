@@ -61,7 +61,7 @@ class ZodiacVideoService
     public function generate(string $templateVideoUrl, string $text, string $fileName, string $disk = 'public'): Model
     {
         $storage = Storage::disk($disk);
-        $fileName = sprintf('horoscope_video/%s_%s.mp4', $fileName, time());
+        $fileName = sprintf('horoscope_video/%s%s.mp4', $fileName, time());
 
         $image = $this->zodiacTextImageService->generate($text, $disk);
 
