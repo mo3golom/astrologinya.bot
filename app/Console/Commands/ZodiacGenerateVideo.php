@@ -7,6 +7,7 @@ use App\Repository\HoroscopeRepository;
 use App\Service\ZodiacVideoService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Orchid\Attachment\Models\Attachment;
 
 class ZodiacGenerateVideo extends Command
 {
@@ -67,7 +68,8 @@ class ZodiacGenerateVideo extends Command
         }
 
         try {
-            $videoPath = $zodiacVideoGeneratorService->generate(
+            /** @var Attachment $attachment */
+            $attachment = $zodiacVideoGeneratorService->generate(
                 $horoscope->setting->template_video_url,
                 $horoscope->short_description,
                 $horoscope->setting->zodiac,
@@ -76,9 +78,10 @@ class ZodiacGenerateVideo extends Command
 
             $horoscopeRepository->update(
                 $horoscope,
-                ['video_url' => $videoPath]
+                ['video_id' => $attachment->id]
             );
         } catch (\Throwable $th) {
+            $this->error($th->getMessage());
             Log::error($th->getMessage() . $th->getTraceAsString());
         }
     }

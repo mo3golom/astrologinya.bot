@@ -52,7 +52,7 @@ class HoroscopeEditScreen extends Screen
 
         if ($this->exists) {
             $this->name = 'Редактирование гороскопа';
-            $this->videoUrl = $model->video_url ?? null;
+            $this->videoUrl = null !== $model->attachment->id ? $model->attachment->url() : null;
         }
 
         return [

@@ -42,7 +42,9 @@ class HoroscopeRepository extends ModelRepository
         // Удаляем вложения
         $horoscopes = $query->with('attachment')->get();
         $horoscopes->map(static function (HoroscopeModel $horoscopeModel) {
-            $horoscopeModel->attachment->delete();
+            if (null !==  $horoscopeModel->attachment->id) {
+                $horoscopeModel->attachment->delete();
+            }
         });
 
         return $query->delete();
@@ -71,7 +73,7 @@ class HoroscopeRepository extends ModelRepository
         return
             $this->model
                 ->newQuery()
-                ->whereNull('video_url')
+                ->whereNull('video_id')
                 ->first()
             ;
     }
@@ -84,7 +86,7 @@ class HoroscopeRepository extends ModelRepository
         return
             $this->model
                 ->newQuery()
-                ->whereNotNull('video_url')
+                ->whereNotNull('video_id')
                 ->get()
             ;
     }

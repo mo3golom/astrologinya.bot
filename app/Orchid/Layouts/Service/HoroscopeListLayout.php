@@ -42,9 +42,12 @@ class HoroscopeListLayout extends Table
             TD::make('video_url', 'Видео')
                 ->align(TD::ALIGN_CENTER)
                 ->render(function (HoroscopeModel $model) {
-                    return (null !== $model->video_url)
-                        ? Link::make(sprintf('Скачать %s.mp4',$model->setting->zodiac))
-                            ->href($model->video_url)
+                    return (
+                        null !== $model->attachment->id
+                        && null !== $model->attachment->url()
+                    )
+                        ? Link::make($model->attachment->original_name)
+                            ->href($model->attachment->url())
                             ->target('_blank')
                         : '';
                 })

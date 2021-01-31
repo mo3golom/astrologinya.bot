@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HoroscopeModel;
 use App\Repository\HoroscopeRepository;
 use Illuminate\Http\JsonResponse;
 
@@ -13,7 +14,9 @@ class MainApiController extends Controller
 
         return response()->json(
             $horoscopes
-                ->pluck('video_url')
+                ->map(static function (HoroscopeModel $horoscopeModel) {
+                    return $horoscopeModel->attachment->url();
+                })
                 ->toArray()
         );
     }

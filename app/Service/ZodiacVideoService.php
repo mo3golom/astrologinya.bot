@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Repository\Orchid\AttachmentRepository;
 use FFMpeg;
 use FFMpeg\Format\Video\X264;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use ProtoneMedia\LaravelFFMpeg\Filters\WatermarkFactory;
 
@@ -31,18 +33,21 @@ class ZodiacVideoService
      */
     private $zodiacTextImageService;
 
+    private $attachmentRepository;
+
     /**
      * ZodiacVideoService constructor.
      *
      * @param ZodiacTextImageService $zodiacTextImageService
      */
-    public function __construct(ZodiacTextImageService $zodiacTextImageService)
+    public function __construct(ZodiacTextImageService $zodiacTextImageService, AttachmentRepository $attachmentRepository)
     {
         $config = config('zodiac.image_text');
         $this->positionX = $config['position_x'];
         $this->positionY = $config['position_y'];
 
         $this->zodiacTextImageService = $zodiacTextImageService;
+        $this->attachmentRepository = $attachmentRepository;
     }
 
     /**
@@ -50,12 +55,13 @@ class ZodiacVideoService
      * @param string $text
      * @param string $fileName
      * @param string $disk
-     * @return string
+     * @return Model
+     * @throws \League\Flysystem\FileNotFoundException
      */
-    public function generate(string $templateVideoUrl, string $text, string $fileName, string $disk = 'public'): string
+    public function generate(string $templateVideoUrl, string $text, string $fileName, string $disk = 'public'): Model
     {
         $storage = Storage::disk($disk);
-        $fileName = sprintf('horoscope_video/%s.mp4', $fileName);
+        $fileName = sprintf('horoscope_video/%s_%s.mp4', $fileName, time());
 
         $image = $this->zodiacTextImageService->generate($text, $disk);
 
@@ -64,7 +70,6 @@ class ZodiacVideoService
         // See: https://github.com/PHP-FFMpeg/PHP-FFMpeg/issues/310
         $mp4Format->setAudioCodec("libmp3lame");
         $mp4Format->setKiloBitrate(self::BITRATE);
-
 
         FFMpeg::openUrl($templateVideoUrl, [])
             ->addWatermark(function (WatermarkFactory $watermark) use ($image, $disk) {
@@ -82,6 +87,6 @@ class ZodiacVideoService
 
         $storage->delete($image);
 
-        return $storage->url($fileName);
+        return $this->attachmentRepository->createFromDiskAndPath($disk, $fileName);
     }
 }
