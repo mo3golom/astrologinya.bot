@@ -18,7 +18,7 @@ use Orchid\Screen\AsSource;
  * @property Carbon $send_time
  * @property int $template_video_id
  * @property-read int $template_video_url
- * @property-read Attachment $attachment
+ * @property-read Attachment $templateVideo
  *
  * Class HoroscopeSettingModel
  */
@@ -55,10 +55,10 @@ class HoroscopeSettingModel extends Model
 
     public function getTemplateVideoUrlAttribute(): string
     {
-        return $this->attachment->url() ?? '';
+        return $this->templateVideo->url() ?? '';
     }
 
-    public function attachment(): HasOne
+    public function templateVideo(): HasOne
     {
         return $this->hasOne(Attachment::class, 'id', 'template_video_id')->withDefault();
     }

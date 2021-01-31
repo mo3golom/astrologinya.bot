@@ -49,10 +49,10 @@ class TelegramSendHoroscope extends Command
             $sendTime = $horoscope->setting->send_time->copy()->setDateFrom($now);
 
             if (
-                $sendTime->isBefore($now)
-                && null !== $horoscope->render_template
+                null !== $horoscope->render_template
+                && $sendTime->isBefore($now)
             ) {
-                $message = $telegramBot->sendMessage($horoscope->render_template);
+                $message = $telegramBot->sendSilentMessage($horoscope->render_template);
 
                 if (null !== $message) {
                     $horoscopeRepository->update($horoscope, [

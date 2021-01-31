@@ -39,11 +39,11 @@ class HoroscopeSettingListLayout extends Table
                 ->align(TD::ALIGN_CENTER)
                 ->render(function (HoroscopeSettingModel $model) {
                     return (
-                        null !== $model->attachment->id
-                        && null !== $model->attachment->url()
+                        null !== $model->templateVideo->id
+                        && null !== $model->templateVideo->url()
                     )
-                        ? Link::make($model->attachment->original_name)
-                            ->href($model->attachment->url())
+                        ? Link::make($model->templateVideo->original_name)
+                            ->href($model->templateVideo->url())
                             ->target('_blank')
                         : '';
                 })
