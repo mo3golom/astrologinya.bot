@@ -59,8 +59,7 @@ class HoroscopeRepository extends ModelRepository
             $this->model
                 ->newQuery()
                 ->with(['setting'])
-                ->where('is_send', '=', false)
-                ->orWhereNull('is_send')
+                ->WhereNull('message_id')
                 ->get()
             ;
     }

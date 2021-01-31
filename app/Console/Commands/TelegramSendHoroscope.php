@@ -25,15 +25,6 @@ class TelegramSendHoroscope extends Command
     protected $description = 'Парсинг описаний гороскопа и добавление записи в таблицу Horoscope';
 
     /**
-     * Create a new command instance.
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @param HoroscopeRepository $horoscopeRepository
@@ -52,11 +43,11 @@ class TelegramSendHoroscope extends Command
                 null !== $horoscope->render_template
                 && $sendTime->isBefore($now)
             ) {
-                $message = $telegramBot->sendSilentMessage($horoscope->render_template);
+                $messageId = $telegramBot->sendSilentMessage($horoscope->render_template);
 
-                if (null !== $message) {
+                if (null !== $messageId) {
                     $horoscopeRepository->update($horoscope, [
-                        'is_send' => true,
+                        'message_id' => $messageId,
                         'send_at' => Carbon::now(),
                     ]);
                 }

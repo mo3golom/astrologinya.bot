@@ -15,10 +15,10 @@ use Orchid\Screen\AsSource;
  * @property int $horoscope_setting_id
  * @property string|null $short_description
  * @property string $description
- * @property boolean $is_send
- * @property Carbon $send_at
- * @property integer $video_id
- * @property Attachment $attachment
+ * @property Carbon|null $send_at
+ * @property integer|null $video_id
+ * @property integer|null $message_id
+ * @property Attachment|null $attachment
  * @property-read string $render_template
  *
  * Class HoroscopeModel
@@ -38,9 +38,9 @@ class HoroscopeModel extends Model
         'horoscope_setting_id',
         'short_description',
         'description',
-        'is_send',
         'send_at',
         'video_id',
+        'message_id'
     ];
 
     protected $casts = [

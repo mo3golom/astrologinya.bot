@@ -32,5 +32,6 @@ return [
 
     'telegram' => [
         'channel_id' => env('TELEGRAM_CHANNEL_ID', '-1001422754627'),
+        'channel_url' => env('TELEGRAM_CHANNEL_URL', 'https://t.me/ponamarev_test'),
     ],
 ];

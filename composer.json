@@ -23,7 +23,8 @@
         "nao-pon/flysystem-google-drive": "~1.1",
         "orchid/platform": "^9.18",
         "paquettg/php-html-parser": "^3.1",
-        "pbmedia/laravel-ffmpeg": "^7.5"
+        "pbmedia/laravel-ffmpeg": "^7.5",
+        "ext-json": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.9",

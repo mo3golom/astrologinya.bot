@@ -54,7 +54,7 @@ class HoroscopeListLayout extends Table
             ,
             TD::make('is_send', 'Статус')
                 ->render(static function (HoroscopeModel $model) {
-                    return $model->is_send ?
+                    return null !== $model->message_id ?
                         sprintf('<span class="badge bg-success text-white">Отправлено в %s</span>', $model->send_at->format('H:i'))
                         : sprintf('<span class="badge bg-info text-white">Ожидает отправки в %s</span>', $model->setting->send_time->format('H:i'));
                 }),
