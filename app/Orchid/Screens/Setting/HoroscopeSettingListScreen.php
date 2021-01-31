@@ -32,7 +32,7 @@ class HoroscopeSettingListScreen extends Screen
     public function query(): array
     {
         return [
-            'horoscopeSettings' => HoroscopeSettingModel::paginate(),
+            'horoscopeSettings' => HoroscopeSettingModel::orderBy('horoscope_setting_id', 'asc')->paginate(),
         ];
     }
 

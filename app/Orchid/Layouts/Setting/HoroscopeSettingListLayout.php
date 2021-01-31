@@ -27,6 +27,7 @@ class HoroscopeSettingListLayout extends Table
     protected function columns(): array
     {
         return [
+            TD::make('horoscope_setting_id', 'ID'),
             TD::make('title', 'Знак зодиака')
                 ->render(function (HoroscopeSettingModel $model) {
                     return Link::make($model->zodiac)
