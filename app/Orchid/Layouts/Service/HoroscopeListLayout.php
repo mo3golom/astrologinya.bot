@@ -46,7 +46,7 @@ class HoroscopeListLayout extends Table
                         null !== $model->attachment->id
                         && null !== $model->attachment->url()
                     )
-                        ? Link::make($model->attachment->original_name)
+                        ? Link::make($model->attachment->name)
                             ->href($model->attachment->url())
                             ->target('_blank')
                         : '';
