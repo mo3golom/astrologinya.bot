@@ -40,7 +40,7 @@ class HoroscopeSettingRepository extends ModelRepository
                 ->select(['horoscope_setting.*'])
                 ->leftJoin('horoscope as h', 'h.horoscope_setting_id', '=', 'horoscope_setting.horoscope_setting_id')
                 ->whereNull('h.horoscope_id')
-                ->orWhere(DB::raw("date_part('day', h.created_at)"), '<', Carbon::now()->day)
+                ->orWhere(DB::raw("date_part('day', h.created_at)"), '!=', Carbon::now()->day)
                 ->get()
             ;
     }
