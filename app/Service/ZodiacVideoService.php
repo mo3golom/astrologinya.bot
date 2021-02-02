@@ -9,6 +9,7 @@ use FFMpeg;
 use FFMpeg\Format\Video\X264;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use ProtoneMedia\LaravelFFMpeg\Exporters\EncodingException;
 use ProtoneMedia\LaravelFFMpeg\Filters\WatermarkFactory;
 
 class ZodiacVideoService
@@ -71,19 +72,23 @@ class ZodiacVideoService
         $mp4Format->setAudioCodec("libmp3lame");
         $mp4Format->setKiloBitrate(self::BITRATE);
 
-        FFMpeg::openUrl($templateVideoUrl, [])
-            ->addWatermark(function (WatermarkFactory $watermark) use ($image, $disk) {
-                $watermark->fromDisk($disk)
-                    ->open($image)
-                    ->left($this->positionX)
-                    ->top($this->positionY)
-                ;
-            })
-            ->export()
-            ->toDisk($disk)
-            ->inFormat($mp4Format)
-            ->save($fileName)
-        ;
+        try {
+            FFMpeg::openUrl($templateVideoUrl, [])
+                ->addWatermark(function (WatermarkFactory $watermark) use ($image, $disk) {
+                    $watermark->fromDisk($disk)
+                        ->open($image)
+                        ->left($this->positionX)
+                        ->top($this->positionY)
+                    ;
+                })
+                ->export()
+                ->toDisk($disk)
+                ->inFormat($mp4Format)
+                ->save($fileName)
+            ;
+        } catch (EncodingException $exception) {
+            \Log::error('ffmpeg_error: '.$exception->getCommand() . $exception->getErrorOutput());
+        }
 
         $storage->delete($image);
 

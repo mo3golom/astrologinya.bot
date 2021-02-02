@@ -20,7 +20,7 @@ class ModelRepository
      */
     public function find(int $id)
     {
-        $key = $this->model->getKey();
+        $key = $this->model->getKeyName();
 
         return
             $this->model

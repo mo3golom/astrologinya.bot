@@ -16,7 +16,7 @@ class ZodiacGenerateVideo extends Command
      *
      * @var string
      */
-    protected $signature = 'zodiac:generate:video';
+    protected $signature = 'zodiac:generate:video {--horoscope_id=0 : ID гороскопа}';
 
     /**
      * The console command description.
@@ -48,8 +48,20 @@ class ZodiacGenerateVideo extends Command
      */
     public function handle(HoroscopeRepository $horoscopeRepository, ZodiacVideoService $zodiacVideoGeneratorService): void
     {
-        /** @var HoroscopeModel $horoscope */
-        $horoscope = $horoscopeRepository->getFirstWithoutVideo();
+        $horoscopeId = (int) $this->option('horoscope_id');
+
+        // Если нужно сгенерировать видео для определенного гороскопа
+        if (0 !== $horoscopeId) {
+            /** @var HoroscopeModel $horoscope */
+            $horoscope = $horoscopeRepository->find($horoscopeId);
+
+            if (null !== $horoscope->video_id) {
+                $horoscope->attachment->delete();
+            }
+        } else {
+            /** @var HoroscopeModel $horoscope */
+            $horoscope = $horoscopeRepository->getFirstWithoutVideo();
+        }
 
         if (null === $horoscope) {
             $msg = 'Нет гороскопов без видео';

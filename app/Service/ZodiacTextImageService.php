@@ -43,12 +43,12 @@ class ZodiacTextImageService
     public function __construct()
     {
         $config = config('zodiac.image_text');
-        $this->offset = $config['offset'];
-        $this->width = $config['width'];
-        $this->height = $config['height'];
-        $this->maxLen = $config['max_len'];
-        $this->fontSize = $config['font_size'];
-        $this->fontHeight = $config['font_height'];
+        $this->offset = (int) $config['offset'];
+        $this->width = (int) $config['width'];
+        $this->height = (int) $config['height'];
+        $this->maxLen = (int) $config['max_len'];
+        $this->fontSize = (int) $config['font_size'];
+        $this->fontHeight = (int) $config['font_height'];
     }
 
     public function generate(string $text, string $disk = 'public'): string
