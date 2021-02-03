@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Service;
 
 use App\Models\HoroscopeModel;
 use App\Orchid\Layouts\Service\HoroscopeListLayout;
+use App\Repository\HoroscopeRepository;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -24,6 +25,10 @@ class HoroscopeListScreen extends Screen
      */
     public $description = '';
 
+    public function __construct(HoroscopeRepository $horoscopeRepository)
+    {
+    }
+
     /**
      * Query data.
      *
@@ -32,7 +37,7 @@ class HoroscopeListScreen extends Screen
     public function query(): array
     {
         return [
-            'horoscopes' => HoroscopeModel::paginate(),
+            'horoscopes' => HoroscopeModel::orderBy('horoscope_setting_id', 'asc')->paginate(),
         ];
     }
 
