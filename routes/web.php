@@ -14,3 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::redirect('/', '/admin');
+
+Route::get('/debug/image', [\App\Http\Controllers\DebugImageController::class, 'index'])
+    ->name('debug.image')
+;

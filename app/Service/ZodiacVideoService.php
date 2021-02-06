@@ -64,7 +64,7 @@ class ZodiacVideoService
         $storage = Storage::disk($disk);
         $fileName = sprintf('horoscope_video/%s%s.mp4', $fileName, time());
 
-        $image = $this->zodiacTextImageService->generate($text, $disk);
+        $image = $this->zodiacTextImageService->generateWithSave($text, $disk);
 
         $mp4Format = new X264();
         // Fix for error "Encoding failed : Can't save to X264"

@@ -33,6 +33,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->title('Настройки')
                 ->route('platform.setting.horoscope.list')
                 ,
+            ItemMenu::label('Генерация изображений')
+                ->title('Отладка')
+                ->route('debug.image')
+            ,
+
         ];
     }
 
