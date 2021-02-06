@@ -10,6 +10,7 @@ return [
         'max_len' => env('ZODIAC_TEXT_MAX_LEN', 60),
         'font_size' => env('ZODIAC_TEXT_FONT_SIZE', 60),
         'font_height' => env('ZODIAC_TEXT_FONT_HEIGHT', 30),
+        'enable_date' => env('ZODIAC_ENABLE_DATE' , false),
     ],
     'default_disk' => env('ZODIAC_DEFAULT_DISK', 'public'),
 ];
