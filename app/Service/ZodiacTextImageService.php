@@ -84,7 +84,7 @@ class ZodiacTextImageService
         }
 
         if ($this->enableDate) {
-            $this->addText($canvas, Carbon::now()->format('d.m.Y'), $this->width / 2, $y +  ($this->fontSize / 3));
+            $this->addText($canvas, Carbon::now()->format('d.m.Y'), $this->width / 2, (int) $y +  ($this->fontSize / 3));
         }
 
         return $canvas;
