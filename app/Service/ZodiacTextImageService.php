@@ -78,15 +78,9 @@ class ZodiacTextImageService
         $canvas = Image::canvas($this->width, $this->height);
 
         foreach ($lines as $i => $line) {
-            $corrector = 0;
-            // Если это не первая строчка и есть заглавная буква, то немного сдвигаем вверх строку
-            if (0 < $i && $this->checkCapitalLetter($line)) {
-                $corrector = ($this->fontSize / 12);
-            }
+            $this->addText($canvas, $line, (int) floor($this->width / 2), (int) floor($y));
 
-            $this->addText($canvas, $line, $this->width / 2, $y - $corrector);
-
-            $y += $this->fontSize - ($this->fontSize / 6);
+            $y += $this->fontSize - ($this->fontSize / 7);
         }
 
         if ($this->enableDate) {
@@ -124,16 +118,5 @@ class ZodiacTextImageService
         Storage::disk($disk)->put($path, $image->encode('png', 100));
 
         return $path;
-    }
-
-    /**
-     * @param string $text
-     * @return bool
-     */
-    private function checkCapitalLetter(string $text): bool
-    {
-        $pattern = "~[А-Я]~u";
-
-        return (bool) preg_match($pattern, $text);
     }
 }
