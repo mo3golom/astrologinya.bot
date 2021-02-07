@@ -78,7 +78,7 @@ class ZodiacTextImageService
         $canvas = Image::canvas($this->width, $this->height);
 
         foreach ($lines as $i => $line) {
-            $this->addText($canvas, $line, (int) floor($this->width / 2), (int) floor($y));
+            $this->addText($canvas, $line, $this->width / 2, (int) $y);
 
             $y += $this->fontSize - ($this->fontSize / 7);
         }
