@@ -36,7 +36,7 @@ class PlatformProvider extends OrchidServiceProvider
             ItemMenu::label('Генерация изображений')
                 ->title('Отладка')
                 ->route('debug.image')
-            ->canSee('local' === env('APP_ENV'))
+                ->canSee('local' === env('APP_ENV'))
             ,
 
         ];
