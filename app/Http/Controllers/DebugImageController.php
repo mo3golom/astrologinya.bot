@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Service\TextEnumCurveImageService;
 use App\Service\ZodiacTextImageService;
 
 /**
@@ -13,15 +14,15 @@ use App\Service\ZodiacTextImageService;
  */
 class DebugImageController
 {
-    private const TEXT = 'Облеченный властью человек портит Вам жизнь, но это не значит, что с этим нужно просто смириться. Для открытого конфликта пока не время, но собирать союзников уже можно.';
-
-    /**
-     * @param ZodiacTextImageService $service
-     * @return mixed
-     */
-    public function index(ZodiacTextImageService $service)
+    public function index(TextEnumCurveImageService $service)
     {
-        $image = $service->generate(self::TEXT);
+        $image = $service
+            ->setTitle('Плюсы Овна')
+            ->setTextEnum(['Невинность', 'наивность', 'слепая вера', 'безрассудное мужество'])
+            ->setEnumPrefix('• ')
+            ->generateListImagesEnums()
+            ->get()[2]
+        ;
 
         return $image->response('png');
     }

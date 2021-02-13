@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Orchid\Screens\Setting;
+namespace App\Orchid\Screens\Creatives;
 
-use App\Models\HoroscopeSettingModel;
-use App\Orchid\Layouts\Setting\HoroscopeSettingListLayout;
+use App\Models\CreativeSettingModel;
+use App\Orchid\Layouts\Creatives\CreativeSettingListLayout;
+use App\Orchid\Layouts\Model\HoroscopeListLayout;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 
-class HoroscopeSettingListScreen extends Screen
+class CreativeSettingListScreen extends Screen
 {
     /**
      * Display header name.
      *
      * @var string
      */
-    public $name = 'Настройки гороскопа';
+    public $name = 'Список настроек креативов';
 
     /**
      * Display header description.
@@ -22,7 +23,6 @@ class HoroscopeSettingListScreen extends Screen
      * @var string
      */
     public $description = '';
-
 
     /**
      * Query data.
@@ -32,7 +32,7 @@ class HoroscopeSettingListScreen extends Screen
     public function query(): array
     {
         return [
-            'horoscopeSettings' => HoroscopeSettingModel::orderBy('horoscope_setting_id', 'asc')->paginate(),
+            'creativeSettings' => CreativeSettingModel::paginate(),
         ];
     }
 
@@ -46,7 +46,7 @@ class HoroscopeSettingListScreen extends Screen
         return [
             Link::make('Создать')
                 ->icon('pencil')
-                ->route('platform.setting.horoscope.edit')
+                ->route('platform.service.creative.settings.edit'),
         ];
     }
 
@@ -58,7 +58,7 @@ class HoroscopeSettingListScreen extends Screen
     public function layout(): array
     {
         return [
-            HoroscopeSettingListLayout::class
+            CreativeSettingListLayout::class,
         ];
     }
 }

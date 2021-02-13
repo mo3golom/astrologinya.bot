@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\TextImage;
 
 use Carbon\Carbon;
 use Intervention\Image\Gd\Font;
@@ -10,7 +10,7 @@ use Intervention\Image\Image;
 use Image as ImageFacade;
 use Storage;
 
-class TextImageService
+class TextMultilineImageService extends AbstractTextImageService
 {
     /**
      * @var int
@@ -20,22 +20,7 @@ class TextImageService
     /**
      * @var int
      */
-    private $boxWidth = 1080;
-
-    /**
-     * @var int
-     */
-    private $boxHeight = 640;
-
-    /**
-     * @var int
-     */
     private $lineMaxLength = 45;
-
-    /**
-     * @var int
-     */
-    private $fontSize = 60;
 
     /**
      * @var array
@@ -43,58 +28,15 @@ class TextImageService
     private $lines = [];
 
     /**
-     * @var string
-     */
-    private $fontPath;
-
-    /**
-     * @var string
-     */
-    private $textColor;
-
-    /**
      * @var Image|null
      */
-    private $canvas = null;
-
-    /**
-     * @param int $textOffset
-     * @return TextImageService
-     */
-    public function setTextOffset(int $textOffset): TextImageService
-    {
-        $this->textOffset = $textOffset;
-
-        return $this;
-    }
-
-    /**
-     * @param int $boxWidth
-     * @return TextImageService
-     */
-    public function setBoxWidth(int $boxWidth): TextImageService
-    {
-        $this->boxWidth = $boxWidth;
-
-        return $this;
-    }
-
-    /**
-     * @param int $boxHeight
-     * @return TextImageService
-     */
-    public function setBoxHeight(int $boxHeight): TextImageService
-    {
-        $this->boxHeight = $boxHeight;
-
-        return $this;
-    }
+    private $canvas;
 
     /**
      * @param int $lineMaxLength
-     * @return TextImageService
+     * @return TextMultilineImageService
      */
-    public function setLineMaxLength(int $lineMaxLength): TextImageService
+    public function setLineMaxLength(int $lineMaxLength): TextMultilineImageService
     {
         $this->lineMaxLength = $lineMaxLength;
 
@@ -102,53 +44,31 @@ class TextImageService
     }
 
     /**
-     * @param int $fontSize
-     * @return TextImageService
+     * @param int $textOffset
+     * @return TextMultilineImageService
      */
-    public function setFontSize(int $fontSize): TextImageService
+    public function setTextOffset(int $textOffset): TextMultilineImageService
     {
-        $this->fontSize = $fontSize;
+        $this->textOffset = $textOffset;
 
         return $this;
     }
 
-    /**
-     * @param string $fontPath
-     * @return TextImageService
-     */
-    public function setFontPath(string $fontPath): TextImageService
-    {
-        $this->fontPath = $fontPath;
-
-        return $this;
-    }
-
-    /**
-     * @param string $textColor
-     * @return TextImageService
-     */
-    public function setTextColor(string $textColor): TextImageService
-    {
-        $this->textColor = $textColor;
-
-        return $this;
-    }
-
-    public function setText(string $text): TextImageService
+    public function setText(string $text): TextMultilineImageService
     {
         $this->lines = explode("\n", wordwrap($text, $this->lineMaxLength));
 
         return $this;
     }
 
-    public function addLine(string $text): TextImageService
+    public function addLine(string $text): TextMultilineImageService
     {
         $this->lines[] = $text;
 
         return $this;
     }
 
-    public function generate(): TextImageService
+    public function generate(): TextMultilineImageService
     {
         $y = $this->textOffset + ($this->fontSize / 2);
         $this->canvas = ImageFacade::canvas($this->boxWidth, $this->boxHeight);

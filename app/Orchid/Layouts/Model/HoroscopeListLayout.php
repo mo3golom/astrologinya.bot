@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Orchid\Layouts\Service;
+namespace App\Orchid\Layouts\Model;
 
 use App\Models\HoroscopeModel;
 use Orchid\Screen\Actions\Link;
@@ -28,12 +28,7 @@ class HoroscopeListLayout extends Table
     {
         return [
             TD::make('horoscope_id', 'ID'),
-            TD::make('horoscope_zodiac', 'Знак зодиака')
-                ->render(static function (HoroscopeModel $model) {
-                    return Link::make($model->setting->zodiac ?? '')
-                        ->route('platform.service.horoscope.edit', $model)
-                        ;
-                })
+            TD::make('zodiac_name', 'Знак зодиака')
             ,
             TD::make('description', 'Описание')
                 ->render(static function (HoroscopeModel $model) {
@@ -44,22 +39,23 @@ class HoroscopeListLayout extends Table
                 ->align(TD::ALIGN_CENTER)
                 ->render(function (HoroscopeModel $model) {
                     return (
-                        null !== $model->attachment->id
-                        && null !== $model->attachment->url()
+                        null !== $model->video->id
+                        && null !== $model->video->url()
                     )
-                        ? Link::make($model->attachment->name)
-                            ->href($model->attachment->url())
+                        ? Link::make($model->video->name)
+                            ->href($model->video->url())
                             ->target('_blank')
                         : '';
                 })
             ,
-            TD::make('is_send', 'Статус')
-                ->render(static function (HoroscopeModel $model) {
-                    return null !== $model->message_id ?
-                        sprintf('<span class="badge bg-success text-white">Отправлено в %s</span>', $model->send_at->format('H:i'))
-                        : sprintf('<span class="badge bg-info text-white">Ожидает отправки в %s</span>', $model->setting->send_time->format('H:i'));
-                }),
             TD::make('created_at', 'Создано'),
+            TD::make('actions', 'Действия')
+                ->render(static function (HoroscopeModel $model) {
+                    return Link::make()
+                        ->icon('pencil')
+                        ->route('platform.service.horoscope.edit', $model)
+                        ;
+                })
         ];
     }
 }

@@ -15,7 +15,6 @@ class PlatformProvider extends OrchidServiceProvider
     public function boot(Dashboard $dashboard): void
     {
         parent::boot($dashboard);
-
         // ...
     }
 
@@ -25,20 +24,18 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
+            ItemMenu::label('Cгенерированные креативы')
+                ->title('Креативы')
+                ->route('platform.service.creatives.list')
+            ,
+            ItemMenu::label('Настройки креативов')
+                ->route('platform.service.creative.settings.list')
+            ,
 
             ItemMenu::label('Гороскопы')
+                ->title('Модели')
                 ->route('platform.service.horoscope.list')
             ,
-            ItemMenu::label('Настройки Гороскопа')
-                ->title('Настройки')
-                ->route('platform.setting.horoscope.list')
-                ,
-            ItemMenu::label('Генерация изображений')
-                ->title('Отладка')
-                ->route('debug.image')
-                ->canSee('local' === env('APP_ENV'))
-            ,
-
         ];
     }
 

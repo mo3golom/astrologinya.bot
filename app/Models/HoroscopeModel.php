@@ -11,15 +11,11 @@ use Orchid\Screen\AsSource;
 
 /**
  * @property-read int $horoscope_id
- * @property-read HoroscopeSettingModel $setting
- * @property int $horoscope_setting_id
- * @property string|null $short_description
+ * @property string $zodiac_name
+ * @property string $description_parse_url
  * @property string $description
- * @property Carbon|null $send_at
  * @property integer|null $video_id
- * @property integer|null $message_id
- * @property Attachment|null $attachment
- * @property-read string $render_template
+ * @property Attachment|null $video
  *
  * Class HoroscopeModel
  */
@@ -32,15 +28,11 @@ class HoroscopeModel extends Model
 
     protected $primaryKey = 'horoscope_id';
 
-    protected $dates = ['send_at'];
-
     protected $fillable = [
-        'horoscope_setting_id',
-        'short_description',
+        'zodiac_name',
+        'description_parse_url',
         'description',
-        'send_at',
         'video_id',
-        'message_id'
     ];
 
     protected $casts = [
@@ -48,30 +40,13 @@ class HoroscopeModel extends Model
         'updated_at' => 'datetime:d.m.Y H:i',
     ];
 
-    public function setting(): HasOne
-    {
-        return $this->hasOne(HoroscopeSettingModel::class, 'horoscope_setting_id', 'horoscope_setting_id');
-    }
-
-    public function attachment(): HasOne
+    public function video(): HasOne
     {
         return $this->hasOne(Attachment::class, 'id', 'video_id')->withDefault();
     }
 
-    public function getRenderTemplateAttribute(): string
+    public static function getZodiacEnum(): array
     {
-        return str_replace(
-            [
-                '{{date}}',
-                '{{description}}',
-                '{{zodiac}}',
-            ],
-            [
-                Carbon::now()->format('d.m.Y'),
-                $this->description ?? '',
-                $this->setting->zodiac ?? '',
-            ],
-            $this->setting->template
-        );
+        return config('enums.zodiac', []);
     }
 }

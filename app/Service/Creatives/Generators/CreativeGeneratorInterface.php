@@ -3,7 +3,8 @@
 namespace App\Service\Creatives\Generators;
 
 use App\DTO\CreativeObjectInterface;
-use Orchid\Attachment\Models\Attachment;
+
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Интерфейс генераторов
@@ -12,5 +13,7 @@ use Orchid\Attachment\Models\Attachment;
  */
 interface CreativeGeneratorInterface
 {
-    public function generate(Attachment $attachment, CreativeObjectInterface $object);
+    public function setConfig(array $config): CreativeGeneratorInterface;
+
+    public function generate(CreativeObjectInterface $object): Model;
 }

@@ -11,5 +11,11 @@ use App\DTO\CreativeObjectInterface;
  */
 interface CreativeObjectGetterInterface
 {
+    public function setConfig(array $config): CreativeObjectGetterInterface;
+
+    /**
+     * Возвращаем null в случае если ничего не нашли
+     * @return CreativeObjectInterface|null
+     */
     public function getObject(): ?CreativeObjectInterface;
 }

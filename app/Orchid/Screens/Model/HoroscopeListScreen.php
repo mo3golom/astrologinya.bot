@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Orchid\Screens\Service;
+namespace App\Orchid\Screens\Model;
 
 use App\Models\HoroscopeModel;
-use App\Orchid\Layouts\Service\HoroscopeListLayout;
+use App\Orchid\Layouts\Model\HoroscopeListLayout;
 use App\Repository\HoroscopeRepository;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
@@ -25,10 +25,6 @@ class HoroscopeListScreen extends Screen
      */
     public $description = '';
 
-    public function __construct(HoroscopeRepository $horoscopeRepository)
-    {
-    }
-
     /**
      * Query data.
      *
@@ -37,7 +33,7 @@ class HoroscopeListScreen extends Screen
     public function query(): array
     {
         return [
-            'horoscopes' => HoroscopeModel::orderBy('horoscope_setting_id', 'asc')->paginate(),
+            'horoscopes' => HoroscopeModel::orderBy('horoscope_id', 'asc')->paginate(),
         ];
     }
 
@@ -63,11 +59,6 @@ class HoroscopeListScreen extends Screen
     public function layout(): array
     {
         return [
-            Layout::rows([
-                Link::make('Api для получения ссылок на видео')
-                    ->route('horoscope.api.urls')
-                ,
-            ]),
             HoroscopeListLayout::class,
         ];
     }

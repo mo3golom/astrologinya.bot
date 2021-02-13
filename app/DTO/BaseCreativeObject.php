@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\DTO;
 
+use Orchid\Attachment\Models\Attachment;
+
 class BaseCreativeObject implements CreativeObjectInterface
 {
     /**
@@ -26,7 +28,29 @@ class BaseCreativeObject implements CreativeObjectInterface
      */
     private $entityName;
 
-    public function setTitle(string $title): CreativeObjectInterface
+    /**
+     * @var Attachment
+     */
+    private $attachment;
+
+    /**
+     * @var int
+     */
+    private $id;
+
+    public function setId(int $id): CreativeObjectInterface
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setTitle(?string $title): CreativeObjectInterface
     {
         $this->title = $title;
 
@@ -45,12 +69,12 @@ class BaseCreativeObject implements CreativeObjectInterface
         return $this;
     }
 
-    public function getText(): ?string
+    public function getText(): string
     {
-        return $this->text ?? null;
+        return $this->text;
     }
 
-    public function setAdditionalParameters(array $parameters): CreativeObjectInterface
+    public function setAdditionalParameters(?array $parameters): CreativeObjectInterface
     {
         $this->additionalParameters = $parameters;
 
@@ -74,4 +98,15 @@ class BaseCreativeObject implements CreativeObjectInterface
         return $this->entityName;
     }
 
+    public function setAttachment(Attachment $attachment): CreativeObjectInterface
+    {
+        $this->attachment = $attachment;
+
+        return $this;
+    }
+
+    public function getAttachment(): Attachment
+    {
+        return $this->attachment;
+    }
 }

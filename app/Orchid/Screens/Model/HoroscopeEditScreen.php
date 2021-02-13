@@ -1,28 +1,27 @@
 <?php
 
-namespace App\Orchid\Screens\Setting;
+namespace App\Orchid\Screens\Model;
 
-use App\Models\HoroscopeSettingModel;
+use App\Models\HoroscopeModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
-use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;
-use Orchid\Screen\Fields\SimpleMDE;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
-class HoroscopeSettingEditScreen extends Screen
+class HoroscopeEditScreen extends Screen
 {
     /**
      * Display header name.
      *
      * @var string
      */
-    public $name = 'Создание настройки гороскопа';
+    public $name = 'Создание гороскопа';
 
     /**
      * Display header description.
@@ -46,26 +45,25 @@ class HoroscopeSettingEditScreen extends Screen
      */
     public function __construct()
     {
-        $this->disk = config('zodiac.default_disk');
+        $this->disk = config('creatives.disk');
     }
 
     /**
      * Query data.
      *
-     * @param HoroscopeSettingModel $model
+     * @param HoroscopeModel $model
      * @return array
      */
-    public function query(HoroscopeSettingModel $model): array
+    public function query(HoroscopeModel $model): array
     {
         $this->exists = $model->exists;
 
         if ($this->exists) {
-            $this->name = 'Редактирование настройки гороскопа';
+            $this->name = 'Редактирование гороскопа';
         }
 
         return [
             'model' => $model,
-            'send_time' => null !== $model->send_time ? $model->send_time->format('H:i') : null,
         ];
     }
 
@@ -101,79 +99,73 @@ class HoroscopeSettingEditScreen extends Screen
      */
     public function layout(): array
     {
-        $zodiac = HoroscopeSettingModel::getZodiacEnum();
+        $zodiac = HoroscopeModel::getZodiacEnum();
         $zodiacSelect = array_combine($zodiac, $zodiac);
 
         return [
             Layout::rows([
-                Select::make('model.zodiac')
+                Select::make('model.zodiac_name')
                     ->title('Знак зодиака')
                     ->options($zodiacSelect)
-                    ->empty('Выбрать...')
+                    ->empty('...')
                     ->required()
                 ,
-                Input::make('model.parse_url')
-                    ->title('Ссылка для парсинга описания')
-                    ->required()
-                ,
-                Input::make('model.short_description_parse_url')
+                Input::make('model.description_parse_url')
                     ->title('Ссылка для парсинга короткого описания')
+                    ->required()
+                    ->autocomplete(false)
                 ,
-                SimpleMDE::make('model.template')
-                    ->title('Шаблон сообщения')
-                    ->help('Можно использовать следующие макросы: <br/> {{date}} - текущая дата  <br/> {{description}} - описание гороскопа <br/> {{zodiac}} - знак зодиака')
+                TextArea::make('model.description')
+                    ->title('Описание гороскопа')
+                    ->rows(4)
+                    ->readonly()
                 ,
-                Upload::make('model.template_video_id')
+                Upload::make('model.video_id')
                     ->title('Шаблон видео для ТикТока (Инстаграма)')
                     ->acceptedFiles('video/mp4,video/x-m4v,video/*')
                     ->maxFiles(1)
                     ->storage($this->disk)
-                ,
-                DateTimer::make('send_time')
-                    ->title('Время отправки сообщения')
-                    ->noCalendar()
-                    ->format24hr()
-                    ->allowInput()
-                    ->format('H:i')
-                    ->required()
                 ,
             ]),
         ];
     }
 
     /**
-     * @param HoroscopeSettingModel $model
+     * @param HoroscopeModel $model
      * @param Request $request
      *
      * @return RedirectResponse
      */
-    public function createOrUpdate(HoroscopeSettingModel $model, Request $request)
+    public function createOrUpdate(HoroscopeModel $model, Request $request)
     {
+        $exists = $model->exists;
         $data = $request->get('model');
 
-        if (isset($data['template_video_id'])) {
-            $data['template_video_id'] = $data['template_video_id'][0] ?? null;
+        if (
+            isset($data['video_id'])
+            && is_array($data['video_id'])
+        ) {
+            $data['video_id'] = (int) $data['video_id'][0];
         }
 
-        $data['send_time'] = $request->get('send_time');
         $model->fill($data)->save();
 
-        Alert::success('Запись создана успешно');
+        Alert::success(sprintf('Запись %s успешно', $exists ? 'обновлена' : 'создана'));
 
-        return redirect()->route('platform.setting.horoscope.list');
+        return redirect()->route('platform.service.horoscope.list');
     }
 
     /**
-     * @param HoroscopeSettingModel $model
+     * @param HoroscopeModel $model
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function remove(HoroscopeSettingModel $model)
+    public function remove(HoroscopeModel $model)
     {
         $model->delete();
 
         Alert::success('Запись удалена успешно');
 
-        return redirect()->route('platform.setting.horoscope.list');
+        return redirect()->route('platform.service.horoscope.list');
     }
 }
