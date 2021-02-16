@@ -87,12 +87,18 @@ Route::screen('roles', RoleListScreen::class)
             ->push(__('Roles'), route('platform.systems.roles'));
     });
 
-Route::screen('setting/horoscope/{horoscopeSetting?}', \App\Orchid\Screens\Setting\HoroscopeSettingEditScreen::class)
-    ->name('platform.setting.horoscope.edit');
-Route::screen('setting/horoscopes', \App\Orchid\Screens\Setting\HoroscopeSettingListScreen::class)
-    ->name('platform.setting.horoscope.list');
 
-Route::screen('horoscope/{horoscope?}', \App\Orchid\Screens\Service\HoroscopeEditScreen::class)
+Route::screen('horoscope/{horoscope?}', \App\Orchid\Screens\Model\HoroscopeEditScreen::class)
     ->name('platform.service.horoscope.edit');
-Route::screen('horoscopes', \App\Orchid\Screens\Service\HoroscopeListScreen::class)
+Route::screen('horoscopes', \App\Orchid\Screens\Model\HoroscopeListScreen::class)
     ->name('platform.service.horoscope.list');
+
+Route::screen('creative/setting/{creativeSetting?}', \App\Orchid\Screens\Creatives\CreativeSettingEditScreen::class)
+    ->name('platform.service.creative.settings.edit');
+Route::screen('creative/settings', \App\Orchid\Screens\Creatives\CreativeSettingListScreen::class)
+    ->name('platform.service.creative.settings.list');
+
+Route::screen('creatives', \App\Orchid\Screens\Creatives\CreativesListScreen::class)
+    ->name('platform.service.creatives.list');
+
+

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Models\HoroscopeModel;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class HoroscopeRepository
@@ -26,28 +28,6 @@ class HoroscopeRepository extends ModelRepository
     public function __construct(HoroscopeModel $model)
     {
         $this->model = $model;
-    }
-
-    /**
-     * @param int $horoscopeSettingId
-     * @return mixed
-     */
-    public function deleteByHoroscopeSettingId(int $horoscopeSettingId)
-    {
-        $query = $this->model
-            ->newQuery()
-            ->where('horoscope_setting_id', '=', $horoscopeSettingId)
-        ;
-
-        // Удаляем вложения
-        $horoscopes = $query->with('attachment')->get();
-        $horoscopes->map(static function (HoroscopeModel $horoscopeModel) {
-            if (null !== $horoscopeModel->attachment->id) {
-                $horoscopeModel->attachment->delete();
-            }
-        });
-
-        return $query->delete();
     }
 
     /**
@@ -87,6 +67,20 @@ class HoroscopeRepository extends ModelRepository
                 ->newQuery()
                 ->whereNotNull('video_id')
                 ->orderBy('horoscope_setting_id', 'asc')
+                ->get()
+            ;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAllWithoutActualHoroscope(): Collection
+    {
+        return
+            $this->model
+                ->newQuery()
+                ->whereNull('description')
+                ->orWhere(DB::raw("date_part('day', updated_at)"), '!=', Carbon::now()->day)
                 ->get()
             ;
     }

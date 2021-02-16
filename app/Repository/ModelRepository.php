@@ -80,4 +80,20 @@ class ModelRepository
     {
         return $model->fill($data)->save();
     }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return mixed
+     */
+    public function updateById(int $id, array $data)
+    {
+        $model = $this->find($id);
+
+        if (null === $model) {
+            return false;
+        }
+
+        return $this->update($model, $data);
+    }
 }
