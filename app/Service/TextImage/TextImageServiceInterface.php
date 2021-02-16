@@ -13,4 +13,6 @@ interface TextImageServiceInterface
     public function setFontPath(string $fontPath): TextImageServiceInterface;
 
     public function setTextColor(string $textColor): TextImageServiceInterface;
+
+    public function setFontHeight(int $fontHeight): TextImageServiceInterface;
 }

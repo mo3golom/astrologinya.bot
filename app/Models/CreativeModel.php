@@ -13,7 +13,7 @@ use Orchid\Screen\AsSource;
  * @property-read int $creative_id
  * @property int $creative_setting_id
  * @property string $object_name
- * @property int $object_id
+ * @property string $object_id
  * @property int $attachment_id
  * @property-read CreativeSettingModel $creativeSetting
  * @property-read Attachment $attachment

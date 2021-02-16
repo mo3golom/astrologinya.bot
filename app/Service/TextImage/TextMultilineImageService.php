@@ -15,11 +15,6 @@ class TextMultilineImageService extends AbstractTextImageService
     /**
      * @var int
      */
-    private $textOffset = 0;
-
-    /**
-     * @var int
-     */
     private $lineMaxLength = 45;
 
     /**
@@ -39,17 +34,6 @@ class TextMultilineImageService extends AbstractTextImageService
     public function setLineMaxLength(int $lineMaxLength): TextMultilineImageService
     {
         $this->lineMaxLength = $lineMaxLength;
-
-        return $this;
-    }
-
-    /**
-     * @param int $textOffset
-     * @return TextMultilineImageService
-     */
-    public function setTextOffset(int $textOffset): TextMultilineImageService
-    {
-        $this->textOffset = $textOffset;
 
         return $this;
     }
@@ -82,7 +66,7 @@ class TextMultilineImageService extends AbstractTextImageService
                 $font->valign('middle');
             });
 
-            $y += $this->fontSize - ($this->fontSize / 7);
+            $y += 0 < $this->fontHeight ? $this->fontHeight : ($this->fontSize - ($this->fontSize / 7));
         }
 
         return $this;

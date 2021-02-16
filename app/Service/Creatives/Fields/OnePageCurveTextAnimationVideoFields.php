@@ -9,9 +9,8 @@ use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Rows;
 use Orchid\Support\Facades\Layout;
 
-class OnePageTextVideoFields implements CreativeFieldsInterface
+class OnePageCurveTextAnimationVideoFields implements CreativeFieldsInterface
 {
-
     /**
      * @var BaseTextVideoFields
      */
@@ -31,10 +30,21 @@ class OnePageTextVideoFields implements CreativeFieldsInterface
             Layout::rows(array_merge(
                 $this->baseTextVideoFields->getFieldsAr(),
                 [
-                    Input::make('line_max_length')
+                    Input::make('duration')
                         ->type('number')
-                        ->value(45)
-                        ->title('Максимальная длина одной строки')
+                        ->value(15)
+                        ->title('Максимальная продолжительность видео')
+                        ->required()
+                    ,
+                    Input::make('frame_duration')
+                        ->type('number')
+                        ->value(1)
+                        ->title('Продолжительность кадра')
+                        ->required()
+                    ,
+                    Input::make('text_prefix')
+                        ->value('• ')
+                        ->title('Префикс для перечисления (пробел учитывается)')
                         ->required()
                     ,
                 ]

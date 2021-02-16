@@ -93,7 +93,7 @@ Route::screen('horoscope/{horoscope?}', \App\Orchid\Screens\Model\HoroscopeEditS
 Route::screen('horoscopes', \App\Orchid\Screens\Model\HoroscopeListScreen::class)
     ->name('platform.service.horoscope.list');
 
-Route::screen('creative/settings/{creativeSetting?}', \App\Orchid\Screens\Creatives\CreativeSettingEditScreen::class)
+Route::screen('creative/setting/{creativeSetting?}', \App\Orchid\Screens\Creatives\CreativeSettingEditScreen::class)
     ->name('platform.service.creative.settings.edit');
 Route::screen('creative/settings', \App\Orchid\Screens\Creatives\CreativeSettingListScreen::class)
     ->name('platform.service.creative.settings.list');

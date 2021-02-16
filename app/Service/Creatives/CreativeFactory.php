@@ -18,15 +18,9 @@ class CreativeFactory
      */
     private $creativeSettingsRepository;
 
-    /**
-     * @var string
-     */
-    private $creativeTypes;
-
     public function __construct(CreativeSettingsRepository $creativeSettingsRepository)
     {
         $this->creativeSettingsRepository = $creativeSettingsRepository;
-        $this->creativeTypes = config('creatives.creatives');
     }
 
     public function getManager(int $creativeSettingId): CreativeManagerInterface
@@ -34,18 +28,12 @@ class CreativeFactory
         /** @var CreativeSettingModel $creativeSetting */
         $creativeSetting = $this->creativeSettingsRepository->find($creativeSettingId);
 
-        if (!isset($this->creativeTypes[$creativeSetting->type])) {
-            throw new \RuntimeException(sprintf('Типа креатива %s нет в конфигурации', $creativeSetting->type));
-        }
-
-        $creative = $this->creativeTypes[$creativeSetting->type];
-
         /** @var CreativeObjectGetterInterface $objectGetter */
-        $objectGetter = app($creative['object_getter']);
+        $objectGetter = app($creativeSetting->object_getter_class);
         $objectGetter->setConfig($creativeSetting->settings);
 
         /** @var CreativeGeneratorInterface $generator */
-        $generator = app($creative['generator']);
+        $generator = app($creativeSetting->generator_class);
         $generator->setConfig($creativeSetting->settings);
 
         /** @var CreativeManagerInterface $manager */

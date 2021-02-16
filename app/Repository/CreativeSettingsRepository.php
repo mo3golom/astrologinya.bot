@@ -31,4 +31,18 @@ class CreativeSettingsRepository extends ModelRepository
                 ->first()
             ;
     }
+
+    /**
+     * @param array $ids
+     * @return int
+     */
+    public function setNotCompleteByIds(array $ids): int
+    {
+        return
+            $this->model
+                ->newQuery()
+                ->whereIn('creative_setting_id', $ids)
+                ->update(['is_complete' => false])
+            ;
+    }
 }

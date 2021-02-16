@@ -56,8 +56,8 @@ class FromModelObjectGetter implements CreativeObjectGetterInterface, CreativeFi
             ->select([sprintf('%s.*', $this->model->getTable())]) // Выбираем только поля модели
             ->leftJoin('creatives as c', function (JoinClause $join) use ($modelNamespace) {
                 $join
-                    ->on('object_name', '=', \DB::raw("'".$modelNamespace."'"))
-                    ->on('object_id', '=', $this->model->getKeyName())
+                    ->on('object_name', '=', \DB::raw("'" . $modelNamespace . "'"))
+                    ->on(\DB::raw('object_id::int'), '=', $this->model->getKeyName())
                 ;
             })
             ->whereNull('c.creative_id') // Ищем для какой записи еще не сгенерировали "креатив"
@@ -68,9 +68,7 @@ class FromModelObjectGetter implements CreativeObjectGetterInterface, CreativeFi
             return null;
         }
 
-        if (
-            !isset($result->{$this->textKey}, $result->{$this->attachmentIdKey})
-        ) {
+        if (!isset($result->{$this->textKey}, $result->{$this->attachmentIdKey})) {
             throw new \RuntimeException('Нет обязательных полей в выборке');
         }
 
@@ -84,7 +82,7 @@ class FromModelObjectGetter implements CreativeObjectGetterInterface, CreativeFi
         // Делаем немного тупое приведение типа, но хочу чтобы однозначно была либо строка либо null
         return
             (new BaseCreativeObject())
-                ->setId($result->{$this->model->getKeyName()})
+                ->setId((string) $result->{$this->model->getKeyName()})
                 ->setTitle(isset($result->{$this->titleKey}) ? (string) $result->{$this->titleKey} : null)
                 ->setText(isset($result->{$this->textKey}) ? (string) $result->{$this->textKey} : null)
                 ->setAttachment($attachment)

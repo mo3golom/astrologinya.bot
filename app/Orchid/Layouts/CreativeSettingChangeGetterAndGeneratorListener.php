@@ -8,19 +8,14 @@ use Orchid\Screen\Layout;
 use Orchid\Screen\Layouts\Listener;
 use Orchid\Support\Facades\Layout as LayoutFacade;
 
-class CreativeSettingChangeTypeListener extends Listener
+class CreativeSettingChangeGetterAndGeneratorListener extends Listener
 {
-    private const FIELDS_CONTAINERS_KEYS = [
-        'object_getter',
-        'generator',
-    ];
-
     /**
      * List of field names for which values will be listened.
      *
      * @var string[]
      */
-    protected $targets = ['creative_setting_type_select'];
+    protected $targets = ['object_getter_class', 'generator_class'];
 
     /**
      * What screen method should be called
@@ -40,32 +35,26 @@ class CreativeSettingChangeTypeListener extends Listener
     {
         // Если нет выбранного типа креатива или где-то потерали список типов
         if (
-            !$this->query->has('creative_setting_type_select')
-            || !$this->query->has('creative_types')
+            !$this->query->has('object_getter_class')
+            || !$this->query->has('generator_class')
         ) {
             return [];
         }
 
-        $creativeType = $this->query->get('creative_setting_type_select');
-        $creativeTypes = $this->query->get('creative_types');
-
-        // Если нет такого типа креатива в списке
-        if (!isset($creativeTypes[$creativeType])) {
-            return [];
-        }
+        $classes = [
+            $this->query->get('object_getter_class'),
+            $this->query->get('generator_class')
+        ];
 
         $layouts = [];
 
-        foreach (self::FIELDS_CONTAINERS_KEYS as $key) {
-            if (
-                !isset($creativeTypes[$creativeType][$key])
-                || !$this->isImplementsCreativeFieldsContainer($creativeTypes[$creativeType][$key])
-            ) {
+        foreach ($classes as $class) {
+            if (!$this->isImplementsCreativeFieldsContainer($class)) {
                 continue;
             }
 
             /** @var CreativeFieldsContainer $fieldsContainer */
-            $fieldsContainer = app($creativeTypes[$creativeType][$key]);
+            $fieldsContainer = app($class);
             /** @var CreativeFieldsInterface $fields */
             $fields = app($fieldsContainer->getFieldsClass());
 
@@ -78,11 +67,11 @@ class CreativeSettingChangeTypeListener extends Listener
     }
 
     /**
-     * @param string $namesapce
+     * @param string $namespace
      * @return bool
      */
-    private function isImplementsCreativeFieldsContainer(string $namesapce): bool
+    private function isImplementsCreativeFieldsContainer(string $namespace): bool
     {
-        return in_array(CreativeFieldsContainer::class, class_implements($namesapce), true);
+        return in_array(CreativeFieldsContainer::class, class_implements($namespace), true);
     }
 }

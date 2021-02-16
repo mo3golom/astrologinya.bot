@@ -34,18 +34,18 @@ class BaseCreativeObject implements CreativeObjectInterface
     private $attachment;
 
     /**
-     * @var int
+     * @var string
      */
     private $id;
 
-    public function setId(int $id): CreativeObjectInterface
+    public function setId(string $id): CreativeObjectInterface
     {
         $this->id = $id;
 
         return $this;
     }
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }

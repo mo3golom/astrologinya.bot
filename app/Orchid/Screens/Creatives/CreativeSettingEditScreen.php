@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Orchid\Screens\Creatives;
 
 use App\Models\CreativeSettingModel;
-use App\Orchid\Layouts\CreativeSettingChangeTypeListener;
+use App\Orchid\Layouts\CreativeSettingChangeGetterAndGeneratorListener;
+use App\Service\Creatives\Generators\OnePageTextVideoGenerator;
+use App\Service\Creatives\ObjectGetters\FromModelObjectGetter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
@@ -40,14 +42,17 @@ class CreativeSettingEditScreen extends Screen
     /**
      * @var array
      */
-    private $creativeTypes;
+    private $objectGetters;
 
     /**
-     * CreativeSettingScreen constructor.
+     * @var array
      */
+    private $generators;
+
     public function __construct()
     {
-        $this->creativeTypes = config('creatives.creatives');
+        $this->objectGetters = config('creatives.object_getters');
+        $this->generators = config('creatives.generators');
     }
 
     /**
@@ -64,9 +69,9 @@ class CreativeSettingEditScreen extends Screen
             $query = [
                 'is_active' => $model->is_active,
                 'name' => $model->name,
-                'creative_setting_type_select' => $model->type,
+                'object_getter_class' => $model->object_getter_class,
+                'generator_class' => $model->generator_class,
                 'is_complete' => $model->is_complete,
-                'creative_types' => $this->creativeTypes,
             ];
 
             foreach ($model->settings as $key => $value) {
@@ -105,20 +110,22 @@ class CreativeSettingEditScreen extends Screen
     }
 
     /**
-     * Метод для слушателя
-     *
-     * @param string|null $type
+     * @param string|null $objectGetterClass
+     * @param string|null $generatorClass
      * @return array
      */
-    public function asyncSeeCreativeSettingsFieldsFromType(string $type = null): array
+    public function asyncSeeCreativeSettingsFieldsFromType(string $objectGetterClass = null, string $generatorClass = null): array
     {
-        if (null === $type) {
+        if (
+            null === $objectGetterClass
+            || null === $generatorClass
+        ) {
             return [];
         }
 
         return [
-            'creative_setting_type_select' => $type,
-            'creative_types' => $this->creativeTypes,
+            'object_getter_class' => $objectGetterClass,
+            'generator_class' => $generatorClass,
         ];
     }
 
@@ -129,11 +136,6 @@ class CreativeSettingEditScreen extends Screen
      */
     public function layout(): array
     {
-        $creativeTypes = [];
-        foreach ($this->creativeTypes as $key => $creativeType) {
-            $creativeTypes[$key] = $creativeType['name'] ?? $key;
-        }
-
         return [
             Layout::rows([
                 Input::make('name')
@@ -146,14 +148,20 @@ class CreativeSettingEditScreen extends Screen
                     ->placeholder('Вкл.')
                     ->title('Активность')
                 ,
-                Select::make('creative_setting_type_select')
-                    ->options($creativeTypes)
-                    ->title('Тип креатива')
+                Select::make('object_getter_class')
+                    ->options($this->objectGetters)
+                    ->title('Геттер данных')
+                    ->empty('...')
+                    ->required()
+                ,
+                Select::make('generator_class')
+                    ->options($this->generators)
+                    ->title('Генератор')
                     ->empty('...')
                     ->required()
                 ,
             ])->title('Основные настройки'),
-            CreativeSettingChangeTypeListener::class,
+            CreativeSettingChangeGetterAndGeneratorListener::class,
         ];
     }
 
@@ -169,15 +177,17 @@ class CreativeSettingEditScreen extends Screen
         $data = $request->all();
         $is_active = isset($data['is_active']);
         $name = $data['name'];
-        $type = $data['creative_setting_type_select'];
+        $objectGetterClass = $data['object_getter_class'];
+        $generatorClass = $data['generator_class'];
 
-        unset($data['is_active'], $data['name'], $data['creative_setting_type_select'], $data['_token']);
+        unset($data['is_active'], $data['name'], $data['object_getter_class'], $data['generator_class'], $data['_token']);
 
         $model
             ->fill([
                 'is_active' => $is_active,
                 'name' => $name,
-                'type' => $type,
+                'object_getter_class' => $objectGetterClass,
+                'generator_class' => $generatorClass,
                 'settings' => $data,
                 'is_complete' => false,
             ])

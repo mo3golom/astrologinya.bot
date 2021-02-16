@@ -30,8 +30,11 @@ class CreativeSettingListLayout extends Table
         return [
             TD::make('creative_setting_id', 'ID'),
             TD::make('name', 'Название'),
-            TD::make('type', 'Тип'),
-            TD::make('is_complete', 'Завершен'),
+            TD::make('is_complete', 'Завершен')
+                ->render(static function (CreativeSettingModel $model) {
+                    return $model->is_complete ? 'Да' : 'Нет';
+                })
+            ,
             TD::make('last_generated_at', 'Последняя генерация'),
             TD::make('created_at', 'Создано'),
             TD::make('actions', 'Действия')
@@ -41,7 +44,8 @@ class CreativeSettingListLayout extends Table
                             ->icon('pencil')
                             ->route('platform.service.creative.settings.edit', $model)
                         ;
-                }),
+                })
+            ,
         ];
     }
 }

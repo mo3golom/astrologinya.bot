@@ -2,8 +2,6 @@
 
 namespace App\DTO;
 
-
-
 use Orchid\Attachment\Models\Attachment;
 
 /**
@@ -13,9 +11,9 @@ use Orchid\Attachment\Models\Attachment;
  */
 interface CreativeObjectInterface
 {
-    public function setId(int $id): CreativeObjectInterface;
+    public function setId(string $id): CreativeObjectInterface;
 
-    public function getId(): int;
+    public function getId(): string;
 
     public function setTitle(?string $title): CreativeObjectInterface;
 

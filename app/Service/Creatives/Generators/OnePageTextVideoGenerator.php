@@ -14,18 +14,12 @@ use FFMpeg;
 use FFMpeg\Format\Video\X264;
 use Illuminate\Database\Eloquent\Model;
 use League\Flysystem\FileNotFoundException;
-use Orchid\Attachment\Models\Attachment;
 use ProtoneMedia\LaravelFFMpeg\Exporters\EncodingException;
 use ProtoneMedia\LaravelFFMpeg\Filters\WatermarkFactory;
 use Storage;
 
-class OnePageTextVideoGenerator implements CreativeGeneratorInterface, CreativeFieldsContainer
+class OnePageTextVideoGenerator extends AbstractTextVideoGenerator implements CreativeFieldsContainer
 {
-    /**
-     * @var string
-     */
-    private $disk;
-
     /**
      * @var TextMultilineImageService
      */
@@ -40,61 +34,31 @@ class OnePageTextVideoGenerator implements CreativeGeneratorInterface, CreativeF
     /**
      * @var int
      */
-    private $boxWidth;
-
-    /**
-     * @var int
-     */
-    private $boxHeight;
-
-    /**
-     * @var int
-     */
-    private $fontSize;
-
-    /**
-     * @var string
-     */
-    private $textColor;
-
-    /**
-     * @var int
-     */
     private $lineMaxLength;
 
     /**
-     * @var int
+     * OnePageTextVideoGenerator constructor.
+     *
+     * @param TextMultilineImageService $textImageService
+     * @param AttachmentRepository $attachmentRepository
      */
-    private $textOffset;
-
-    /**
-     * @var int
-     */
-    private $positionX;
-
-    /**
-     * @var int
-     */
-    private $positionY;
-
     public function __construct(TextMultilineImageService $textImageService, AttachmentRepository $attachmentRepository)
     {
         $this->textImageService = $textImageService;
         $this->attachmentRepository = $attachmentRepository;
 
-        $this->disk = config('creatives.disk');
+        parent::__construct();
     }
 
+    /**
+     * @param array $config
+     * @return CreativeGeneratorInterface
+     */
     public function setConfig(array $config): CreativeGeneratorInterface
     {
-        $this->boxWidth = (int) ($config['box_width'] ?? 1080);
-        $this->boxHeight = (int) ($config['box_height'] ?? 640);
-        $this->fontSize = (int) ($config['font_size'] ?? 60);
-        $this->textColor = trim($config['text_color'] ?? '#ffffff');
         $this->lineMaxLength = (int) ($config['line_max_length'] ?? 45);
-        $this->textOffset = (int) ($config['text_offset'] ?? 0);
-        $this->positionX = (int) ($config['position_x'] ?? 0);
-        $this->positionY = (int) ($config['position_y'] ?? 0);
+
+        parent::setConfig($config);
 
         return $this;
     }
@@ -137,11 +101,9 @@ class OnePageTextVideoGenerator implements CreativeGeneratorInterface, CreativeF
         $mp4Format->setKiloBitrate(8580);
 
         try {
-            if ('yandexcloud' === $attachment->disk) {
-                $ffmpeg = FFMpeg::openUrl($attachment->url(), []);
-            } else {
-                $ffmpeg = FFMpeg::fromDisk($attachment->disk)->open($attachment->physicalPath());
-            }
+            $ffmpeg = 'yandexcloud' === $attachment->disk
+                ? FFMpeg::openUrl($attachment->url(), [])
+                : FFMpeg::fromDisk($attachment->disk)->open($attachment->physicalPath());
 
             $ffmpeg
                 ->addWatermark(function (WatermarkFactory $watermark) use ($image) {

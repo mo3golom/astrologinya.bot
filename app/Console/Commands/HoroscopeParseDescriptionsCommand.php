@@ -3,8 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\HoroscopeModel;
+use App\Repository\CreativeRepository;
 use App\Repository\HoroscopeRepository;
+use App\Service\CreativesService;
 use App\Service\OrakulParserService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -25,19 +28,10 @@ class HoroscopeParseDescriptionsCommand extends Command
     protected $description = 'Парсинг описаний гороскопа и добавление записи в таблицу Horoscope';
 
     /**
-     * Create a new command instance.
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * @param HoroscopeRepository $horoscopeRepository
      * @param OrakulParserService $orakulParserService
      */
-    public function handle(HoroscopeRepository $horoscopeRepository, OrakulParserService $orakulParserService): void
+    public function handle(HoroscopeRepository $horoscopeRepository, OrakulParserService $orakulParserService, CreativesService $creativesService): void
     {
         $horoscopeCollection = $horoscopeRepository->getAllWithoutActualHoroscope();
 
@@ -48,11 +42,13 @@ class HoroscopeParseDescriptionsCommand extends Command
             return;
         }
 
+        $updateIds = [];
         foreach ($horoscopeCollection as $horoscope) {
-            if (null !== $horoscope->description_parse_url) {
-                /** @var HoroscopeModel $horoscope */
+            /** @var HoroscopeModel $horoscope */
+            if (isset($horoscope->description_parse_url)) {
                 $description = $orakulParserService->parse($horoscope->description_parse_url);
 
+                $updateIds[] = $horoscope->horoscope_id;
                 $horoscopeRepository->update($horoscope, [
                     'description' => $description,
                 ]);
@@ -61,5 +57,8 @@ class HoroscopeParseDescriptionsCommand extends Command
                 time_nanosleep(10, 0);
             }
         }
+
+        // Удаляем все ранее сделанные креативы
+        $creativesService->deleteByObjectNameAndObjectIds(HoroscopeModel::class, $updateIds);
     }
 }

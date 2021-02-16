@@ -27,9 +27,19 @@ abstract class AbstractTextImageService implements TextImageServiceInterface
     protected $fontPath;
 
     /**
+     * @var int
+     */
+    protected $textOffset = 0;
+
+    /**
      * @var string
      */
     protected $textColor = '#ffffff';
+
+    /**
+     * @var int
+     */
+    protected $fontHeight = 0;
 
     /**
      * @param int $boxWidth
@@ -82,6 +92,28 @@ abstract class AbstractTextImageService implements TextImageServiceInterface
     public function setTextColor(string $textColor): TextImageServiceInterface
     {
         $this->textColor = $textColor;
+
+        return $this;
+    }
+
+    /**
+     * @param int $textOffset
+     * @return TextMultilineImageService
+     */
+    public function setTextOffset(int $textOffset): TextImageServiceInterface
+    {
+        $this->textOffset = $textOffset;
+
+        return $this;
+    }
+
+    /**
+     * @param int $fontHeight
+     * @return TextImageServiceInterface
+     */
+    public function setFontHeight(int $fontHeight): TextImageServiceInterface
+    {
+        $this->fontHeight = $fontHeight;
 
         return $this;
     }
